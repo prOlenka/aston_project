@@ -18,7 +18,6 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
-
 public class AstonProjectApplication {
 	public static void main(String[] args) {
 		Scanner scanner = new Scanner(System.in);
@@ -80,27 +79,26 @@ public class AstonProjectApplication {
 					}
 				}
 				case "3" -> {
-					//TODO: раскомментить
-//					if (data.isEmpty()) {
-//						System.out.println("Данные отсутствуют. Сначала заполните массив.");
-//					} else {
-//						System.out.println("Введите код для поиска: ");
-//						String searchKey = scanner.nextLine();
-//						T target = factory.createForSearch(searchKey);
-//						if (target != null) {
-//							List<T> foundItems = binarySearch.searchAll(data, target);
-//							if (!foundItems.isEmpty()) {
-//								System.out.println("Найденные элементы:");
-//								for (T item : foundItems) {
-//									System.out.println(item);
-//								}
-//							} else {
-//								System.out.println("Элементы не найдены.");
-//							}
-//						} else {
-//							System.out.println("Некорректный ввод для поиска.");
-//						}
-//					}
+					if (data.isEmpty()) {
+						System.out.println("Данные отсутствуют. Сначала заполните массив.");
+					} else {
+						System.out.println("Введите код для поиска: ");
+						String searchKey = scanner.nextLine();
+						T target = factory.createForSearch(searchKey);
+						if (target != null) {
+							List<T> foundItems = binarySearch.searchAll(data, target);
+							if (!foundItems.isEmpty()) {
+								System.out.println("Найденные элементы:");
+								for (T item : foundItems) {
+									System.out.println(item);
+								}
+							} else {
+								System.out.println("Элементы не найдены.");
+							}
+						} else {
+							System.out.println("Некорректный ввод для поиска.");
+						}
+					}
 				}
 				case "4" -> {
 					if (data.isEmpty()) {
@@ -182,16 +180,15 @@ public class AstonProjectApplication {
 	}
 
 	private static <T extends Comparable<T>> void saveDataToFile(String filePath, List<T> data) {
-		//TODO: раскомментить
-//		List<String> lines = new ArrayList<>();
-//		for (T item : data) {
-//			lines.add(item.toString());
-//		}
-//		try {
-//			DataWriter.writeFile(filePath, lines);
-//			System.out.println("Данные успешно сохранены в файл.");
-//		} catch (IOException e) {
-//			System.out.println("Ошибка записи в файл: " + e.getMessage());
-//		}
+		List<String> lines = new ArrayList<>();
+		for (T item : data) {
+			lines.add(item.toString());
+		}
+		try {
+			DataWriter.writeFile(filePath, lines);
+			System.out.println("Данные успешно сохранены в файл.");
+		} catch (IOException e) {
+			System.out.println("Ошибка записи в файл: " + e.getMessage());
+		}
 	}
 }
