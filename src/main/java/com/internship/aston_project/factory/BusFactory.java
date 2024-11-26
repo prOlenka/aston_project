@@ -1,6 +1,7 @@
 package com.internship.aston_project.factory;
 
 import com.internship.aston_project.model.Bus;
+import com.internship.aston_project.utils.FileValidation;
 
 import java.util.Scanner;
 
@@ -10,7 +11,7 @@ public class BusFactory implements ObjectFactory<Bus> {
         System.out.println("Введите номер, модель и пробег (через пробел):");
         String input = scanner.nextLine();
         String[] parts = input.split(" ");
-        if (parts.length == 3 && Validator.validateInteger(parts[0]) && Validator.validateInteger(parts[2])) {
+        if (parts.length == 3 && FileValidation.validateInteger(parts[0]) && FileValidation.validateInteger(parts[2])) {
             return new Bus.Builder()
                     .setNumber(Integer.parseInt(parts[0]))
                     .setModel(parts[1])
@@ -24,7 +25,7 @@ public class BusFactory implements ObjectFactory<Bus> {
     @Override
     public Bus parse(String line) {
         String[] parts = line.split(",");
-        if (parts.length == 3 && Validator.validateInteger(parts[0]) && Validator.validateInteger(parts[2])) {
+        if (parts.length == 3 && FileValidation.validateInteger(parts[0]) && FileValidation.validateInteger(parts[2])) {
             return new Bus.Builder()
                     .setNumber(Integer.parseInt(parts[0]))
                     .setModel(parts[1])
@@ -54,4 +55,3 @@ public class BusFactory implements ObjectFactory<Bus> {
         }
     }
 }
-

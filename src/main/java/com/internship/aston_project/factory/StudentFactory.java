@@ -1,7 +1,7 @@
 package com.internship.aston_project.factory;
 
-import model.Student;
-import util.Validator;
+import com.internship.aston_project.utils.FileValidation;
+import com.internship.aston_project.model.Student;
 
 import java.util.HashSet;
 import java.util.Scanner;
@@ -15,7 +15,7 @@ public class StudentFactory implements ObjectFactory<Student> {
         System.out.println("Введите номер группы, средний балл и номер зачетки (через пробел):");
         String input = scanner.nextLine();
         String[] parts = input.split(" ");
-        if (parts.length == 3 && Validator.validateInteger(parts[0]) && Validator.validateDouble(parts[1])) {
+        if (parts.length == 3 && FileValidation.validateInteger(parts[0]) && FileValidation.validateDouble(parts[1])) {
             String recordBookNumber = parts[2];
             if (!usedRecordBookNumbers.add(recordBookNumber)) {
                 System.out.println("Ошибка: номер зачётки уже используется. Попробуйте другой номер.");
@@ -33,7 +33,7 @@ public class StudentFactory implements ObjectFactory<Student> {
     @Override
     public Student parse(String line) {
         String[] parts = line.split(",");
-        if (parts.length == 3 && Validator.validateInteger(parts[0]) && Validator.validateDouble(parts[1])) {
+        if (parts.length == 3 && FileValidation.validateInteger(parts[0]) && FileValidation.validateDouble(parts[1])) {
             String recordBookNumber = parts[2];
             if (!usedRecordBookNumbers.add(recordBookNumber)) {
                 System.out.println("Ошибка: номер зачётки уже используется. Пропускаем запись.");

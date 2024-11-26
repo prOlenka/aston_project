@@ -1,6 +1,6 @@
 package com.internship.aston_project.factory;
 
-import model.User;
+import com.internship.aston_project.model.User;
 
 import java.util.Scanner;
 
