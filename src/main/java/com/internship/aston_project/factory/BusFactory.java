@@ -1,16 +1,37 @@
 package com.internship.aston_project.factory;
 
 import com.internship.aston_project.model.Bus;
+import com.internship.aston_project.utils.Validator;
 
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 public class BusFactory implements ObjectFactory<Bus> {
+    private final Set<String> usedBusNumbers = new HashSet<>();
     @Override
     public Bus create(Scanner scanner, boolean fullInput) {
         System.out.println("Введите номер, модель и пробег (через пробел):");
         String input = scanner.nextLine();
         String[] parts = input.split(" ");
-        if (parts.length == 3 && Validator.validateInteger(parts[0]) && Validator.validateInteger(parts[2])) {
+        if (parts.length == 3) {
+            if (Validator.isValidStringWithoutSymbols(parts[0])) {
+                System.out.println("Некорректный формат, в значении не могут присутсвовать специальные смволыю");
+                return null;
+            }
+            if (Validator.isValidStringWithoutSymbols(parts[1])) {
+                System.out.println("Некорректный формат, в значении не могут присутсвовать специальные символы.");
+                return null;
+            }
+            if (!Validator.isValidInteger(parts[2])) {
+                System.out.println("Неуорректный формат ввода, пробег может быть только числовым значением");
+                return null;
+            }
+            String busNumber = parts[2];
+            if (!usedBusNumbers.add(busNumber)) {
+                System.out.println("Ошибка: " + busNumber + " уже используется. Попробуйте другой номер автобуса");
+                return null;
+            }
             return new Bus.Builder()
                     .setNumber(Integer.parseInt(parts[0]))
                     .setModel(parts[1])
@@ -24,7 +45,7 @@ public class BusFactory implements ObjectFactory<Bus> {
     @Override
     public Bus parse(String line) {
         String[] parts = line.split(",");
-        if (parts.length == 3 && Validator.validateInteger(parts[0]) && Validator.validateInteger(parts[2])) {
+        if (parts.length == 3 && Validator.isValidInteger(parts[0]) && Validator.isValidInteger(parts[2])) {
             return new Bus.Builder()
                     .setNumber(Integer.parseInt(parts[0]))
                     .setModel(parts[1])
