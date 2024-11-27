@@ -5,7 +5,7 @@ import java.util.Scanner;
 public interface ObjectFactory<T> {
     T create(Scanner scanner, boolean fullInput);
 
-    T parse(String line);
+    String parse(String line);
 
     T generateRandom();
 

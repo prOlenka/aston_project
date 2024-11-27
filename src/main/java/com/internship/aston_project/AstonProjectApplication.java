@@ -9,12 +9,15 @@ import com.internship.aston_project.sort.SortStrategy;
 import com.internship.aston_project.utils.BinarySearch;
 import com.internship.aston_project.utils.FileUtils;
 import com.internship.aston_project.utils.PropertiesLoader;
+import com.internship.aston_project.utils.Validator;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+
+import static com.internship.aston_project.utils.FileUtils.parseLineByType;
 
 public class AstonProjectApplication {
 	public static void main(String[] args) {
@@ -31,9 +34,9 @@ public class AstonProjectApplication {
 
 			String typeChoice = scanner.nextLine();
 			switch (typeChoice) {
-				case "1" -> manageData(new ArrayList<>(), new QuickSort<>(), scanner, new BusFactory());
-				case "2" -> manageData(new ArrayList<>(), new QuickSort<>(), scanner, new StudentFactory());
-				case "3" -> manageData(new ArrayList<>(), new QuickSort<>(), scanner, new UserFactory());
+				case "1" -> manageData(new ArrayList<>(), new QuickSort<>(), scanner, new BusFactory(), "1");
+				case "2" -> manageData(new ArrayList<>(), new QuickSort<>(), scanner, new StudentFactory(), "2");
+				case "3" -> manageData(new ArrayList<>(), new QuickSort<>(), scanner, new UserFactory(),"3");
 				case "4" -> {
 					System.out.println("Выход из программы. До свидания!");
 					running = false;
@@ -44,7 +47,7 @@ public class AstonProjectApplication {
 		scanner.close();
 	}
 
-	private static <T extends Comparable<T>> void manageData(List<T> data, SortStrategy<T> sortStrategy, Scanner scanner, ObjectFactory<T> factory) throws IOException {
+	private static <T extends Comparable<T>> void manageData(List<T> data, SortStrategy<T> sortStrategy, Scanner scanner, ObjectFactory<T> factory, String type) {
 		BinarySearch<T> binarySearch = new BinarySearch<>();
 		boolean managing = true;
 
@@ -58,7 +61,13 @@ public class AstonProjectApplication {
 
 			String choice = scanner.nextLine();
 			switch (choice) {
-				case "1" -> data = fillData(scanner, factory);
+				case "1" -> {
+                    try {
+                        data = fillData(scanner, factory, type);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
 				case "2" -> {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
@@ -94,13 +103,9 @@ public class AstonProjectApplication {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив."); // olga_pronina
 					} else {
-						System.out.println("Введите класс в который сохранить файл: ");
-						System.out.println("1. Автобус");
-						System.out.println("2. Студент");
-						System.out.println("3. Пользователь");
-						String type = scanner.nextLine();
-
+						System.out.println(PropertiesLoader.getAddressBasedOnType(type) + " 1"); //TODO
 						saveDataToFile(type, PropertiesLoader.getAddressBasedOnType(type), data);
+						System.out.println("Данные сохранены в файл");
 					}
 				}
 				case "5" -> managing = false;
@@ -109,7 +114,7 @@ public class AstonProjectApplication {
 		}
 	}
 
-	private static <T extends Comparable<T>> List<T> fillData(Scanner scanner, ObjectFactory<T> factory) throws IOException {
+	private static <T extends Comparable<T>> List<T> fillData(Scanner scanner, ObjectFactory<T> factory, String type) throws IOException {
 		List<T> data = new ArrayList<>();
 		System.out.println("Выберите способ заполнения :");
 		System.out.println("1. Вручную");
@@ -121,7 +126,7 @@ public class AstonProjectApplication {
 			case "1" -> {
 				System.out.println("Введите количество элементов:");
 				String countInput = scanner.nextLine();
-				if (FileValidation.validateInteger(countInput)) {
+				if (Validator.isValidInteger(countInput)) {
 					int count = Integer.parseInt(countInput);
 					for (int i = 0; i < count; i++) {
 						System.out.printf("Введите данные для элемента %d:%n", i + 1);
@@ -138,30 +143,28 @@ public class AstonProjectApplication {
 				}
 			}
 			case "2" -> {
-				System.out.println("Выберите тип файла: " ); // olga_pronina
-				System.out.println("1. Автобус");
-				System.out.println("2. Студент");
-				System.out.println("3. Пользователь");
-
-				String type = scanner.nextLine();
-				PropertiesLoader propertiesLoader = new PropertiesLoader();
-
-				List <String> listFromFile = FileUtils.readFile(propertiesLoader.getAddressBasedOnType(type));
-
-				try {
-					data.add((T) listFromFile);
-				} catch (Exception e) {
-					throw new RuntimeException(e);
+				List<String> listFromFile = FileUtils.readFile(PropertiesLoader.getAddressBasedOnType(type));
+				 // [Number: 101, Model: Mercedes Sprinter, Mileage: 120000.5, Number: 202, Model: Volvo B8R, Mileage: 90000.0, Number: 303, Model: MAN Lion's Coach, Mileage: 75000.3]
+				for (String line : listFromFile) {
+					String formattedInput = parseLineByType(line, type);
+					System.out.println(formattedInput); //TODO
+					System.out.println(factory.getClass());
+					try (Scanner lineScanner = new Scanner(formattedInput)) {
+						T object = factory.create(lineScanner, true);
+						if (object != null) {
+							data.add(object);
+						}
+					}
 				}
-
 					System.out.println("Данные успешно загружены из файла.");
-
-
+				System.out.println(data);//TODO
+					return data;
 			}
+
 			case "3" -> {
 				System.out.println("Введите количество элементов:");
 				String countInput = scanner.nextLine();
-				if (FileValidation.validateInteger(countInput)) {
+				if (Validator.isValidInteger(countInput)) {
 					int count = Integer.parseInt(countInput);
 					for (int i = 0; i < count; i++) {
 						data.add(factory.generateRandom());
@@ -176,11 +179,15 @@ public class AstonProjectApplication {
 		return data;
 	}
 
+
 	private static <T extends Comparable<T>> void saveDataToFile(String type, String filePath, List<T> data) {
 		List<List<String>> lines = new ArrayList<>(); // olga_pronina
+
+		System.out.println(data + "data"); //TODO
 		for (T item : data) {
 			lines.add(List.of(item.toString()));
 		}
+		System.out.println(lines + " saveDataToFile");
 		try {
 			FileUtils.prepareAndWrite(type, filePath, lines);
 			System.out.println("Данные успешно сохранены в файл.");
@@ -188,6 +195,4 @@ public class AstonProjectApplication {
 			System.out.println("Ошибка записи в файл: " + e.getMessage());
 		}
 	}
-
-
 }
