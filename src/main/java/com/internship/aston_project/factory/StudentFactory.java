@@ -44,21 +44,10 @@ public class StudentFactory implements ObjectFactory<Student> {
     }
 
     @Override
-    public Student parse(String line) {
-        String[] parts = line.split(",");
-        if (parts.length == 3 && Validator.isValidInteger(parts[0]) && Validator.isValidDouble(parts[1])) {
-            String recordBookNumber = parts[2];
-            if (!usedRecordBookNumbers.add(recordBookNumber)) {
-                System.out.println("Ошибка: номер зачётки уже используется. Пропускаем запись.");
-                return null;
-            }
-            return new Student.Builder()
-                    .setGroupNumber(Integer.parseInt(parts[0]))
-                    .setAverageScore(Double.parseDouble(parts[1]))
-                    .setRecordBookNumber(recordBookNumber)
-                    .build();
-        }
-        return null;
+    public String parse(String line) {
+        return line.replace("GroupNumber: ", "")
+                .replace(", AverageGrade: ", " ")
+                .replace(", GradeBookNumber: ", " ");
     }
 
     @Override

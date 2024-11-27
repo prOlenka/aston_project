@@ -13,6 +13,7 @@ public class BusFactory implements ObjectFactory<Bus> {
     public Bus create(Scanner scanner, boolean fullInput) {
         System.out.println("Введите номер, модель и пробег (через пробел):");
         String input = scanner.nextLine();
+        System.out.println(input + " input");//TODO
         String[] parts = input.split(" ");
         if (parts.length == 3) {
             if (Validator.isValidStringWithoutSymbols(parts[0])) {
@@ -43,16 +44,10 @@ public class BusFactory implements ObjectFactory<Bus> {
     }
 
     @Override
-    public Bus parse(String line) {
-        String[] parts = line.split(",");
-        if (parts.length == 3 && Validator.isValidInteger(parts[0]) && Validator.isValidInteger(parts[2])) {
-            return new Bus.Builder()
-                    .setNumber(Integer.parseInt(parts[0]))
-                    .setModel(parts[1])
-                    .setMileage(Integer.parseInt(parts[2]))
-                    .build();
-        }
-        return null;
+    public String parse(String line) {
+        return line.replace("Number: ", "")
+                .replace(", Model: ", " ")
+                .replace(", Mileage: ", " ");
     }
 
     @Override
