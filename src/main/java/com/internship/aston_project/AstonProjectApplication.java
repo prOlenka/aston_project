@@ -24,11 +24,12 @@ public class AstonProjectApplication {
 
 		System.out.println("Добро пожаловать в программу управления данными!");
 		while (running) {
-			System.out.println("\nВыберите тип данных:");
-			System.out.println("1. Автобусы");
-			System.out.println("2. Студенты");
-			System.out.println("3. Пользователи");
-			System.out.println("4. Выйти");
+			System.out.println("""
+				Выберите тип данных:
+				1. Автобусы
+				2. Студенты
+				3. Пользователи
+				4. Выйти""");
 
 			String typeChoice = scanner.nextLine();
 			switch (typeChoice) {
@@ -50,12 +51,13 @@ public class AstonProjectApplication {
 		boolean managing = true;
 
 		while (managing) {
-			System.out.printf("\nУправление данными типа %s:%n", factory.getClass().getSimpleName());
-			System.out.println("1. Заполнить данные");
-			System.out.println("2. Отсортировать данные");
-			System.out.println("3. Найти элемент (Бинарный поиск)");
-			System.out.println("4. Сохранить данные в файл");
-			System.out.println("5. Назад");
+			System.out.printf("Управление данными типа %s:%n", factory.getClass().getSimpleName());
+			System.out.println("""
+				1. Заполнить данные
+				2. Отсортировать данные
+				3. Найти элемент (Бинарный поиск)
+				4. Сохранить данные в файл
+				5. Назад""");
 
 			String choice = scanner.nextLine();
 			switch (choice) {
@@ -113,10 +115,11 @@ public class AstonProjectApplication {
 
 	private static <T extends Comparable<T>> List<T> fillData(Scanner scanner, ObjectFactory<T> factory) throws IOException {
 		List<T> data = new ArrayList<>();
-		System.out.println("Выберите способ заполнения :");
-		System.out.println("1. Вручную");
-		System.out.println("2. Из файла");
-		System.out.println("3. Рандомно");
+		System.out.println("""
+			Выберите способ заполнения:
+			1. Вручную
+			2. Из файла
+			3. Рандомно""");
 
 		String choice = scanner.nextLine();
 		switch (choice) {
@@ -127,7 +130,7 @@ public class AstonProjectApplication {
 					int count = Integer.parseInt(countInput);
 					for (int i = 0; i < count; i++) {
 						System.out.printf("Введите данные для элемента %d:%n", i + 1);
-						T item = factory.create(scanner, true);
+						T item = factory.create(scanner);
 						if (item != null) {
 							data.add(item);
 						} else {
@@ -146,7 +149,7 @@ public class AstonProjectApplication {
 					String formattedInput = FileUtils.parseLineByType(line, factory.getClass().getName());
 
 					try (Scanner lineScanner = new Scanner(formattedInput)) {
-						T object = factory.create(lineScanner, true);
+						T object = factory.create(lineScanner);
 						if (object != null) {
 							data.add(object);
 						}

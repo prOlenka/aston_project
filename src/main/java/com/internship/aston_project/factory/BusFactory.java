@@ -10,14 +10,14 @@ import java.util.Set;
 public class BusFactory implements ObjectFactory<Bus> {
     private final Set<String> usedBusNumbers = new HashSet<>();
     @Override
-    public Bus create(Scanner scanner, boolean fullInput) {
+    public Bus create(Scanner scanner) {
         System.out.println("Введите номер, модель и пробег (через пробел):");
         String input = scanner.nextLine();
 
         String[] parts = input.split(" ");
         if (parts.length == 3) {
             if (Validator.isValidStringWithoutSymbols(parts[0])) {
-                System.out.println("Некорректный формат, в значении не могут присутствовать специальные символы");
+                System.out.println("Некорректный формат, в значении не могут присутствовать специальные символы.");
                 return null;
             }
             if (Validator.isValidStringWithoutSymbols(parts[1])) {

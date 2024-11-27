@@ -11,7 +11,7 @@ public class StudentFactory implements ObjectFactory<Student> {
     private final Set<String> usedRecordBookNumbers = new HashSet<>();
 
     @Override
-    public Student create(Scanner scanner, boolean fullInput) {
+    public Student create(Scanner scanner) {
         System.out.println("Введите номер группы, средний балл и номер зачетки (через пробел):");
         String input = scanner.nextLine();
         String[] parts = input.split(" ");
