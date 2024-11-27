@@ -1,7 +1,5 @@
 package com.internship.aston_project.model;
 
-import com.internship.aston_project.utils.Validator;
-
 public class User implements Comparable<User> {
     private final String name;
     private final String password;

@@ -10,7 +10,7 @@ import java.util.Set;
 public class UserFactory implements ObjectFactory<User> {
     private final Set<String> usedRecordUserEmails = new HashSet<>();
     @Override
-    public User create(Scanner scanner, boolean fullInput) {
+    public User create(Scanner scanner) {
         System.out.println("Введите имя, пароль и email (через пробел):");
         String input = scanner.nextLine();
         String[] parts = input.split(" ");
@@ -25,12 +25,12 @@ public class UserFactory implements ObjectFactory<User> {
                 return null;
             }
             if(!Validator.isValidEmail(parts[2])) {
-                System.out.println("Некорректный формат имейла.");
+                System.out.println("Некорректный формат e-mail.");
                 return null;
             }
             String email = parts[2];
             if (!usedRecordUserEmails.add(email)) {
-                System.out.println("Ошибка: " + email + " уже используется. Попробуйте другой имейл");
+                System.out.println("Ошибка: " + email + " уже используется. Попробуйте другой e-mail");
                 return null;
             }
             return new User.Builder()

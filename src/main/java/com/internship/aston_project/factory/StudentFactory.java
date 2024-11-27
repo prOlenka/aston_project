@@ -11,7 +11,7 @@ public class StudentFactory implements ObjectFactory<Student> {
     private final Set<String> usedRecordBookNumbers = new HashSet<>();
 
     @Override
-    public Student create(Scanner scanner, boolean fullInput) {
+    public Student create(Scanner scanner) {
         System.out.println("Введите номер группы, средний балл и номер зачетки (через пробел):");
         String input = scanner.nextLine();
         String[] parts = input.split(" ");
@@ -26,7 +26,7 @@ public class StudentFactory implements ObjectFactory<Student> {
                 return null;
             }
             if(!Validator.isValidInteger(parts[2])){
-                System.out.println("Некорректный формат, номер зачет можеь быть только числом.");
+                System.out.println("Некорректный формат, номер зачет может быть только числом.");
                 return null;
             }
             String recordBookNumber = parts[2];
