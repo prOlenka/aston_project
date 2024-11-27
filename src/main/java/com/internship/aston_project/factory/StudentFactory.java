@@ -1,7 +1,7 @@
 package com.internship.aston_project.factory;
 
-import com.internship.aston_project.utils.FileValidation;
 import com.internship.aston_project.model.Student;
+import com.internship.aston_project.utils.Validator;
 
 import java.util.HashSet;
 import java.util.Scanner;
@@ -15,7 +15,20 @@ public class StudentFactory implements ObjectFactory<Student> {
         System.out.println("Введите номер группы, средний балл и номер зачетки (через пробел):");
         String input = scanner.nextLine();
         String[] parts = input.split(" ");
-        if (parts.length == 3 && FileValidation.validateInteger(parts[0]) && FileValidation.validateDouble(parts[1])) {
+        if (parts.length == 3){
+            if(!Validator.isValidInteger(parts[0])){
+                System.out.println("Некорректный формат группы. Номер группы должен быть числом.");
+                return null;
+            }
+            if(!Validator.isValidDouble(parts[1])){
+                System.out.println("Некорректный формат ввода, средний бал может принимать только числовое значение +/n" +
+                        "(целое или нецелое).");
+                return null;
+            }
+            if(!Validator.isValidInteger(parts[2])){
+                System.out.println("Некорректный формат, номер зачет можеь быть только числом.");
+                return null;
+            }
             String recordBookNumber = parts[2];
             if (!usedRecordBookNumbers.add(recordBookNumber)) {
                 System.out.println("Ошибка: номер зачётки уже используется. Попробуйте другой номер.");
@@ -33,7 +46,7 @@ public class StudentFactory implements ObjectFactory<Student> {
     @Override
     public Student parse(String line) {
         String[] parts = line.split(",");
-        if (parts.length == 3 && FileValidation.validateInteger(parts[0]) && FileValidation.validateDouble(parts[1])) {
+        if (parts.length == 3 && Validator.isValidInteger(parts[0]) && Validator.isValidDouble(parts[1])) {
             String recordBookNumber = parts[2];
             if (!usedRecordBookNumbers.add(recordBookNumber)) {
                 System.out.println("Ошибка: номер зачётки уже используется. Пропускаем запись.");

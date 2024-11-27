@@ -8,6 +8,7 @@ import com.internship.aston_project.sort.QuickSort;
 import com.internship.aston_project.sort.SortStrategy;
 import com.internship.aston_project.strategy.StrategyFiller;
 import com.internship.aston_project.utils.BinarySearch;
+import com.internship.aston_project.utils.Validator;
 
 import com.internship.aston_project.strategy.BusArrayFiller;
 import com.internship.aston_project.strategy.StudentArrayFiller;
@@ -127,7 +128,7 @@ public class AstonProjectApplication {
 			case "1" -> {
 				System.out.println("Введите количество элементов:");
 				String countInput = scanner.nextLine();
-				if (FileValidation.validateInteger(countInput)) {
+				if (Validator.isValidInteger(countInput)) {
 					int count = Integer.parseInt(countInput);
 					for (int i = 0; i < count; i++) {
 						System.out.printf("Введите данные для элемента %d:%n", i + 1);
@@ -161,10 +162,11 @@ public class AstonProjectApplication {
 					System.out.println("Ошибка чтения файла: " + e.getMessage());
 				}
 			}
+
 			case "3" -> {
 				System.out.println("Введите количество элементов:");
 				String countInput = scanner.nextLine();
-				if (FileValidation.validateInteger(countInput)) {
+				if (Validator.isValidInteger(countInput)) {
 					int count = Integer.parseInt(countInput);
 					for (int i = 0; i < count; i++) {
 						data.add(filler.fillFromRandom());
