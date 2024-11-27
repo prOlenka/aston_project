@@ -6,17 +6,30 @@ import java.util.Properties;
 
 public class PropertiesLoader {
 
-    private final Properties properties = new Properties();
+    private static final Properties properties = new Properties();
 
-    public PropertiesLoader(String filePath) {
-        try (FileInputStream fis = new FileInputStream(filePath)) {
+    public PropertiesLoader() {
+        try (FileInputStream fis = new FileInputStream("src/main/resources/application.properties")) {
             properties.load(fis);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load properties file: " + filePath, e);
+            throw new RuntimeException("Failed to load properties file", e);
         }
     }
 
-    public String getFilePath(String key) {
+    public static String getFilePath(String key) {
         return properties.getProperty(key);
+    }
+
+    public static String getAddressBasedOnType(String type) {
+        switch (type) {
+            case "1":
+                return getFilePath("bus.file.path");
+            case "2":
+                return getFilePath("student.file.path");
+            case "3":
+                return getFilePath("user.file.path");
+            default:
+                return "Ошибка введённых данных, попробуйте снова";
+        }
     }
 }
