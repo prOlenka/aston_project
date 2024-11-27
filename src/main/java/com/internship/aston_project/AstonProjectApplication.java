@@ -9,10 +9,9 @@ import com.internship.aston_project.sort.SortStrategy;
 import com.internship.aston_project.utils.BinarySearch;
 import com.internship.aston_project.utils.FileUtils;
 import com.internship.aston_project.utils.PropertiesLoader;
-import lombok.Value;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -45,7 +44,7 @@ public class AstonProjectApplication {
 		scanner.close();
 	}
 
-	private static <T extends Comparable<T>> void manageData(List<T> data, SortStrategy<T> sortStrategy, Scanner scanner, ObjectFactory<T> factory) {
+	private static <T extends Comparable<T>> void manageData(List<T> data, SortStrategy<T> sortStrategy, Scanner scanner, ObjectFactory<T> factory) throws IOException {
 		BinarySearch<T> binarySearch = new BinarySearch<>();
 		boolean managing = true;
 
@@ -93,12 +92,15 @@ public class AstonProjectApplication {
 				}
 				case "4" -> {
 					if (data.isEmpty()) {
-						System.out.println("Данные отсутствуют. Сначала заполните массив.");
+						System.out.println("Данные отсутствуют. Сначала заполните массив."); // olga_pronina
 					} else {
-						System.out.println("Введите путь и имя файла для сохранения данных: ");
-						//TODO "Введите класс в который сохранить файл: "
-						String filePath = scanner.nextLine();
-						saveDataToFile(filePath, data);
+						System.out.println("Введите класс в который сохранить файл: ");
+						System.out.println("1. Автобус");
+						System.out.println("2. Студент");
+						System.out.println("3. Пользователь");
+						String type = scanner.nextLine();
+
+						saveDataToFile(type, PropertiesLoader.getAddressBasedOnType(type), data);
 					}
 				}
 				case "5" -> managing = false;
@@ -107,7 +109,7 @@ public class AstonProjectApplication {
 		}
 	}
 
-	private static <T extends Comparable<T>> List<T> fillData(Scanner scanner, ObjectFactory<T> factory) {
+	private static <T extends Comparable<T>> List<T> fillData(Scanner scanner, ObjectFactory<T> factory) throws IOException {
 		List<T> data = new ArrayList<>();
 		System.out.println("Выберите способ заполнения :");
 		System.out.println("1. Вручную");
@@ -136,13 +138,21 @@ public class AstonProjectApplication {
 				}
 			}
 			case "2" -> {
-				System.out.println("Введите путь к файлу:"); // В задании не указано введение адреса.
-				//TODO заменить на "Заполнить данные из файла"
-				PropertiesLoader loader = new PropertiesLoader("src/main/resources/application.properties");
+				System.out.println("Выберите тип файла: " ); // olga_pronina
+				System.out.println("1. Автобус");
+				System.out.println("2. Студент");
+				System.out.println("3. Пользователь");
 
-				String userFilePath = loader.getFilePath("user.file.path");
-				String busFilePath = loader.getFilePath("bus.file.path");
-				String studentFilePath = loader.getFilePath("student.file.path");
+				String type = scanner.nextLine();
+				PropertiesLoader propertiesLoader = new PropertiesLoader();
+
+				List <String> listFromFile = FileUtils.readFile(propertiesLoader.getAddressBasedOnType(type));
+
+				try {
+					data.add((T) listFromFile);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
+				}
 
 					System.out.println("Данные успешно загружены из файла.");
 
@@ -166,16 +176,18 @@ public class AstonProjectApplication {
 		return data;
 	}
 
-	private static <T extends Comparable<T>> void saveDataToFile(String type, List<T> data) {
-		List<String> lines = new ArrayList<>();
+	private static <T extends Comparable<T>> void saveDataToFile(String type, String filePath, List<T> data) {
+		List<List<String>> lines = new ArrayList<>(); // olga_pronina
 		for (T item : data) {
-			lines.add(item.toString());
+			lines.add(List.of(item.toString()));
 		}
 		try {
-			FileUtils.writeToFile(type, lines);
+			FileUtils.prepareAndWrite(type, filePath, lines);
 			System.out.println("Данные успешно сохранены в файл.");
 		} catch (IOException e) {
 			System.out.println("Ошибка записи в файл: " + e.getMessage());
 		}
 	}
+
+
 }
