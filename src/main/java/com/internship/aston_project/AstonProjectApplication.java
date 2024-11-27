@@ -7,8 +7,12 @@ import com.internship.aston_project.factory.UserFactory;
 import com.internship.aston_project.sort.QuickSort;
 import com.internship.aston_project.sort.SortStrategy;
 import com.internship.aston_project.utils.BinarySearch;
+import com.internship.aston_project.utils.FileUtils;
+import com.internship.aston_project.utils.PropertiesLoader;
+import lombok.Value;
 
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -92,6 +96,7 @@ public class AstonProjectApplication {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
 						System.out.println("Введите путь и имя файла для сохранения данных: ");
+						//TODO "Введите класс в который сохранить файл: "
 						String filePath = scanner.nextLine();
 						saveDataToFile(filePath, data);
 					}
@@ -131,22 +136,17 @@ public class AstonProjectApplication {
 				}
 			}
 			case "2" -> {
-				System.out.println("Введите путь к файлу:");
-				String filePath = scanner.nextLine();
-				try {
-					List<String> lines = DataReader.readFile(filePath);
-					for (String line : lines) {
-						T item = factory.parse(line);
-						if (item != null) {
-							data.add(item);
-						} else {
-							System.out.println("Ошибка валидации строки: " + line);
-						}
-					}
+				System.out.println("Введите путь к файлу:"); // В задании не указано введение адреса.
+				//TODO заменить на "Заполнить данные из файла"
+				PropertiesLoader loader = new PropertiesLoader("src/main/resources/application.properties");
+
+				String userFilePath = loader.getFilePath("user.file.path");
+				String busFilePath = loader.getFilePath("bus.file.path");
+				String studentFilePath = loader.getFilePath("student.file.path");
+
 					System.out.println("Данные успешно загружены из файла.");
-				} catch (IOException e) {
-					System.out.println("Ошибка чтения файла: " + e.getMessage());
-				}
+
+
 			}
 			case "3" -> {
 				System.out.println("Введите количество элементов:");
@@ -166,13 +166,13 @@ public class AstonProjectApplication {
 		return data;
 	}
 
-	private static <T extends Comparable<T>> void saveDataToFile(String filePath, List<T> data) {
+	private static <T extends Comparable<T>> void saveDataToFile(String type, List<T> data) {
 		List<String> lines = new ArrayList<>();
 		for (T item : data) {
 			lines.add(item.toString());
 		}
 		try {
-			DataWriter.writeFile(filePath, lines);
+			FileUtils.writeToFile(type, lines);
 			System.out.println("Данные успешно сохранены в файл.");
 		} catch (IOException e) {
 			System.out.println("Ошибка записи в файл: " + e.getMessage());

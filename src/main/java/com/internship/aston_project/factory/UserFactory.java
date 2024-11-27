@@ -1,7 +1,5 @@
 package com.internship.aston_project.factory;
 
-import model.User;
-
 import java.util.Scanner;
 
 public class UserFactory implements ObjectFactory<User> {

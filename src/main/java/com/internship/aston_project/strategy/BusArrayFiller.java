@@ -2,7 +2,7 @@ package com.internship.aston_project.strategy;
 
 public class BusArrayFiller implements StrategyFiller {
     @Override
-    public void fillFromRandom() {
+    public <T> fillFromRandom() {
 
     }
 
