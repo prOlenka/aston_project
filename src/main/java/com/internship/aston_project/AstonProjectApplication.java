@@ -7,6 +7,8 @@ import com.internship.aston_project.factory.UserFactory;
 import com.internship.aston_project.sort.QuickSort;
 import com.internship.aston_project.sort.SortStrategy;
 import com.internship.aston_project.utils.BinarySearch;
+import com.internship.aston_project.utils.FileUtils;
+import com.internship.aston_project.utils.PropertiesLoader;
 import com.internship.aston_project.utils.Validator;
 
 import java.io.IOException;
@@ -56,7 +58,13 @@ public class AstonProjectApplication {
 
 			String choice = scanner.nextLine();
 			switch (choice) {
-				case "1" -> data = fillData(scanner, factory);
+				case "1" -> {
+                    try {
+                        data = fillData(scanner, factory);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
 				case "2" -> {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
@@ -90,11 +98,15 @@ public class AstonProjectApplication {
 				}
 				case "4" -> {
 					if (data.isEmpty()) {
-						System.out.println("Данные отсутствуют. Сначала заполните массив.");
+						System.out.println("Данные отсутствуют. Сначала заполните массив."); // olga_pronina
 					} else {
-						System.out.println("Введите путь и имя файла для сохранения данных: ");
-						String filePath = scanner.nextLine();
-						saveDataToFile(filePath, data);
+						System.out.println("Введите класс в который сохранить файл: ");
+						System.out.println("1. Автобус");
+						System.out.println("2. Студент");
+						System.out.println("3. Пользователь");
+						String type = scanner.nextLine();
+
+						saveDataToFile(type, PropertiesLoader.getAddressBasedOnType(type), data);
 					}
 				}
 				case "5" -> managing = false;
@@ -103,7 +115,7 @@ public class AstonProjectApplication {
 		}
 	}
 
-	private static <T extends Comparable<T>> List<T> fillData(Scanner scanner, ObjectFactory<T> factory) {
+	private static <T extends Comparable<T>> List<T> fillData(Scanner scanner, ObjectFactory<T> factory) throws IOException {
 		List<T> data = new ArrayList<>();
 		System.out.println("Выберите способ заполнения :");
 		System.out.println("1. Вручную");
@@ -132,22 +144,25 @@ public class AstonProjectApplication {
 				}
 			}
 			case "2" -> {
-				System.out.println("Введите путь к файлу:");
-				String filePath = scanner.nextLine();
+				System.out.println("Выберите тип файла: " ); // olga_pronina
+				System.out.println("1. Автобус");
+				System.out.println("2. Студент");
+				System.out.println("3. Пользователь");
+
+				String type = scanner.nextLine();
+				PropertiesLoader propertiesLoader = new PropertiesLoader();
+
+				List <String> listFromFile = FileUtils.readFile(propertiesLoader.getAddressBasedOnType(type));
+
 				try {
-					List<String> lines = DataReader.readFile(filePath);
-					for (String line : lines) {
-						T item = factory.parse(line);
-						if (item != null) {
-							data.add(item);
-						} else {
-							System.out.println("Ошибка валидации строки: " + line);
-						}
-					}
-					System.out.println("Данные успешно загружены из файла.");
-				} catch (IOException e) {
-					System.out.println("Ошибка чтения файла: " + e.getMessage());
+					data.add((T) listFromFile);
+				} catch (Exception e) {
+					throw new RuntimeException(e);
 				}
+
+				System.out.println("Данные успешно загружены из файла.");
+
+
 			}
 
 			case "3" -> {
@@ -168,13 +183,14 @@ public class AstonProjectApplication {
 		return data;
 	}
 
-	private static <T extends Comparable<T>> void saveDataToFile(String filePath, List<T> data) {
-		List<String> lines = new ArrayList<>();
+
+	private static <T extends Comparable<T>> void saveDataToFile(String type, String filePath, List<T> data) {
+		List<List<String>> lines = new ArrayList<>(); // olga_pronina
 		for (T item : data) {
-			lines.add(item.toString());
+			lines.add(List.of(item.toString()));
 		}
 		try {
-			DataWriter.writeFile(filePath, lines);
+			FileUtils.prepareAndWrite(type, filePath, lines);
 			System.out.println("Данные успешно сохранены в файл.");
 		} catch (IOException e) {
 			System.out.println("Ошибка записи в файл: " + e.getMessage());
