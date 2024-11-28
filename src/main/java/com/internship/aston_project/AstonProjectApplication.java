@@ -50,8 +50,14 @@ public class AstonProjectApplication {
 		BinarySearch<T> binarySearch = new BinarySearch<>();
 		boolean managing = true;
 
+		String type = null;
+		switch (factory.getClass().getSimpleName()){
+			case "StudentFactory" -> {type = "Student";}
+			case "UserFactory" -> {type = "User";}
+			case "BusFactory" -> {type = "Bus";}}
+
 		while (managing) {
-			System.out.printf("Управление данными типа %s:%n", factory.getClass().getSimpleName());
+			System.out.printf("Управление данными типа %s:%n", type);
 			System.out.println("""
 				1. Заполнить данные
 				2. Отсортировать данные
@@ -130,7 +136,7 @@ public class AstonProjectApplication {
 					int count = Integer.parseInt(countInput);
 					for (int i = 0; i < count; i++) {
 						System.out.printf("Введите данные для элемента %d:%n", i + 1);
-						T item = factory.create(scanner);
+						T item = factory.create(scanner, choice);
 						if (item != null) {
 							data.add(item);
 						} else {
@@ -138,6 +144,7 @@ public class AstonProjectApplication {
 							i--;
 						}
 					}
+					System.out.println("Данные успешно добавлены.");
 				} else {
 					System.out.println("Ошибка: введите целое число.");
 				}
@@ -149,7 +156,7 @@ public class AstonProjectApplication {
 					String formattedInput = FileUtils.parseLineByType(line, factory.getClass().getName());
 
 					try (Scanner lineScanner = new Scanner(formattedInput)) {
-						T object = factory.create(lineScanner);
+						T object = factory.create(lineScanner, choice);
 						if (object != null) {
 							data.add(object);
 						}
@@ -160,8 +167,6 @@ public class AstonProjectApplication {
 				}else {
 					System.out.println("Данные успешно загружены из файла.");
 				}
-
-				return data;
 			}
 
 			case "3" -> {

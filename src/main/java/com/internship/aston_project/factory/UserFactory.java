@@ -10,8 +10,8 @@ import java.util.Set;
 public class UserFactory implements ObjectFactory<User> {
     private final Set<String> usedRecordUserEmails = new HashSet<>();
     @Override
-    public User create(Scanner scanner) {
-        System.out.println("Введите имя, пароль и email (через пробел):");
+    public User create(Scanner scanner, String choice) {
+        if(choice.equals("1")) System.out.println("Введите имя, пароль и email (через пробел):");
         String input = scanner.nextLine();
         String[] parts = input.split(" ");
         if (parts.length == 3) {

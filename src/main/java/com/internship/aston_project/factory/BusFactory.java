@@ -10,18 +10,18 @@ import java.util.Set;
 public class BusFactory implements ObjectFactory<Bus> {
     private final Set<String> usedBusNumbers = new HashSet<>();
     @Override
-    public Bus create(Scanner scanner) {
-        System.out.println("Введите номер, модель и пробег (через пробел):");
+    public Bus create(Scanner scanner, String choice) {
+        if(choice.equals("1")) System.out.println("Введите номер, модель и пробег (через пробел):");
         String input = scanner.nextLine();
 
         String[] parts = input.split(" ");
         if (parts.length == 3) {
-            if (Validator.isValidStringWithoutSymbols(parts[0])) {
-                System.out.println("Некорректный формат, в значении не могут присутствовать специальные символы.");
+            if (!Validator.isValidInteger(parts[0])) {
+                System.out.println("Некорректный формат ввода, номер может быть только числовым значением.");
                 return null;
             }
-            if (Validator.isValidStringWithoutSymbols(parts[1])) {
-                System.out.println("Некорректный формат, в значении не могут присутствовать специальные символы.");
+            if (!Validator.isValidStringWithoutSymbols(parts[1])) {
+                System.out.println("Некорректный формат ввода, в значении не могут присутствовать специальные символы.");
                 return null;
             }
             if (!Validator.isValidInteger(parts[2])) {
@@ -39,7 +39,6 @@ public class BusFactory implements ObjectFactory<Bus> {
                     .setMileage(Integer.parseInt(parts[2]))
                     .build();
         }
-        scanner.close();
         return null;
     }
 
