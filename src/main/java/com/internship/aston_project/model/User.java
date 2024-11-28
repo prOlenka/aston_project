@@ -1,5 +1,7 @@
 package com.internship.aston_project.model;
 
+import lombok.Getter;
+@Getter
 public class User implements Comparable<User> {
     private final String name;
     private final String password;

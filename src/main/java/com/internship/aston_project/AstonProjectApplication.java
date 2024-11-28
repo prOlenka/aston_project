@@ -4,17 +4,16 @@ import com.internship.aston_project.factory.BusFactory;
 import com.internship.aston_project.factory.ObjectFactory;
 import com.internship.aston_project.factory.StudentFactory;
 import com.internship.aston_project.factory.UserFactory;
+import com.internship.aston_project.sort.OddEvenSort;
 import com.internship.aston_project.sort.QuickSort;
 import com.internship.aston_project.sort.SortStrategy;
-import com.internship.aston_project.utils.BinarySearch;
-import com.internship.aston_project.utils.FileUtils;
-import com.internship.aston_project.utils.PropertiesLoader;
-import com.internship.aston_project.utils.Validator;
+import com.internship.aston_project.utils.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Function;
 
 
 public class AstonProjectApplication {
@@ -78,9 +77,25 @@ public class AstonProjectApplication {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
-						sortStrategy.sort(data);
-						System.out.println("Данные успешно отсортированы.");
-						System.out.println("Отсортированный массив: " + data);
+						System.out.println("Выберите тип сортировки:");
+						System.out.println("1. Быстрая сортировка");
+						System.out.println("2. Сортировка четных элементов");
+						String sortChoice = scanner.nextLine();
+						SortStrategy<T> chosenSortStrategy = switch (sortChoice) {
+							case "1" -> new QuickSort<>();
+							case "2" -> new OddEvenSort<>();
+							default -> null;
+						};
+						if (chosenSortStrategy != null) {
+							Function<T, ? extends Comparable> sortKey = SearchField.chooseField(scanner, factory);
+							if (sortKey != null) {
+								chosenSortStrategy.sort(data, sortKey);
+								System.out.println("Данные успешно отсортированы.");
+								System.out.println("Отсортированный массив: " + data);
+							}
+						} else {
+							System.out.println("Неверный выбор сортировки.");
+						}
 					}
 				}
 				case "3" -> {
@@ -110,7 +125,6 @@ public class AstonProjectApplication {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
 						saveDataToFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getName()), factory, data);
-
 					}
 				}
 				case "5" -> managing = false;
