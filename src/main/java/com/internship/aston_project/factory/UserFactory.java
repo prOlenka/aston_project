@@ -20,8 +20,8 @@ public class UserFactory implements ObjectFactory<User> {
                 return null;
             }
             if(!Validator.isValidPassword(parts[1])) {
-                System.out.println("Некорректный формат пароля. Пароль должен содержать цифры, /n" +
-                                    "заглавные и строчные латинские буквы и быть не меньше 6 символов");
+                System.out.println("Некорректный формат пароля. Пароль должен содержать цифры,\n" +
+                        "заглавные и строчные латинские буквы и быть не меньше 6 символов");
                 return null;
             }
             if(!Validator.isValidEmail(parts[2])) {
@@ -43,16 +43,10 @@ public class UserFactory implements ObjectFactory<User> {
     }
 
     @Override
-    public User parse(String line) {
-        String[] parts = line.split(",");
-        if (parts.length == 3) {
-            return new User.Builder()
-                    .setName(parts[0])
-                    .setPassword(parts[1])
-                    .setEmail(parts[2])
-                    .build();
-        }
-        return null;
+    public String parse(String line) {
+        return line.replace("Name: ", "")
+                .replace(", Email: ", " ")
+                .replace(", Password: ", " ");
     }
 
     @Override

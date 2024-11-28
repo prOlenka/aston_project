@@ -13,18 +13,19 @@ public class BusFactory implements ObjectFactory<Bus> {
     public Bus create(Scanner scanner, boolean fullInput) {
         System.out.println("Введите номер, модель и пробег (через пробел):");
         String input = scanner.nextLine();
+
         String[] parts = input.split(" ");
         if (parts.length == 3) {
             if (Validator.isValidStringWithoutSymbols(parts[0])) {
-                System.out.println("Некорректный формат, в значении не могут присутсвовать специальные смволыю");
+                System.out.println("Некорректный формат, в значении не могут присутствовать специальные символы");
                 return null;
             }
             if (Validator.isValidStringWithoutSymbols(parts[1])) {
-                System.out.println("Некорректный формат, в значении не могут присутсвовать специальные символы.");
+                System.out.println("Некорректный формат, в значении не могут присутствовать специальные символы.");
                 return null;
             }
             if (!Validator.isValidInteger(parts[2])) {
-                System.out.println("Неуорректный формат ввода, пробег может быть только числовым значением");
+                System.out.println("Некорректный формат ввода, пробег может быть только числовым значением");
                 return null;
             }
             String busNumber = parts[2];
@@ -43,16 +44,10 @@ public class BusFactory implements ObjectFactory<Bus> {
     }
 
     @Override
-    public Bus parse(String line) {
-        String[] parts = line.split(",");
-        if (parts.length == 3 && Validator.isValidInteger(parts[0]) && Validator.isValidInteger(parts[2])) {
-            return new Bus.Builder()
-                    .setNumber(Integer.parseInt(parts[0]))
-                    .setModel(parts[1])
-                    .setMileage(Integer.parseInt(parts[2]))
-                    .build();
-        }
-        return null;
+    public String parse(String line) {
+        return line.replace("Number: ", "")
+                .replace(", Model: ", " ")
+                .replace(", Mileage: ", " ");
     }
 
     @Override
