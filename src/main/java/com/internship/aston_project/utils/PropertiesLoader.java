@@ -5,31 +5,22 @@ import java.io.IOException;
 import java.util.Properties;
 
 public class PropertiesLoader {
-
     private static final Properties properties = new Properties();
 
-    public PropertiesLoader() {
+    static {
         try (FileInputStream fis = new FileInputStream("src/main/resources/application.properties")) {
             properties.load(fis);
         } catch (IOException e) {
-            throw new RuntimeException("Failed to load properties file", e);
+            throw new RuntimeException("Не удалось загрузить файл свойств", e);
         }
-    }
-
-    public static String getFilePath(String key) {
-        return properties.getProperty(key);
     }
 
     public static String getAddressBasedOnType(String type) {
-        switch (type) {
-            case "1":
-                return getFilePath("bus.file.path");
-            case "2":
-                return getFilePath("student.file.path");
-            case "3":
-                return getFilePath("user.file.path");
-            default:
-                return "Ошибка введённых данных, попробуйте снова";
-        }
+        return switch (type) {
+            case "com.internship.aston_project.factory.BusFactory" -> properties.getProperty("bus.file.path");
+            case "com.internship.aston_project.factory.StudentFactory" -> properties.getProperty("student.file.path");
+            case "com.internship.aston_project.factory.UserFactory" -> properties.getProperty("user.file.path");
+            default -> "Ошибка введённых данных, попробуйте снова";
+        };
     }
 }

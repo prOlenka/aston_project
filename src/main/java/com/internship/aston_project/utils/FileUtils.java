@@ -15,7 +15,9 @@ import java.util.Objects;
 public class FileUtils {
     public static List<String> readFile(String filePath) throws IOException {
         Objects.requireNonNull(filePath, "Путь к файлу не может быть null");
+
         return Files.readAllLines(Paths.get(filePath));
+
     }
 
     // Метод для записи в файл
@@ -54,9 +56,9 @@ public class FileUtils {
 
     public static String parseLineByType(String line, String type) {
         return switch (type) {
-            case "1" -> new BusFactory().parse(line);
-            case "2" -> new StudentFactory().parse(line);
-            case "3" -> new UserFactory().parse(line);
+            case "com.internship.aston_project.factory.BusFactory" -> new BusFactory().parse(line);
+            case "com.internship.aston_project.factory.StudentFactory" -> new StudentFactory().parse(line);
+            case "com.internship.aston_project.factory.UserFactory" -> new UserFactory().parse(line);
             default -> throw new IllegalArgumentException("Неизвестный тип: " + type);
         };
     }
