@@ -10,7 +10,7 @@ public class Validator {
 
     public static boolean isValidInteger(String input) {
         try{
-            Integer.parseInt(String.valueOf(input));
+            Integer.parseInt(input);
             return true;
         }catch(NumberFormatException e){
             return false;
@@ -39,7 +39,7 @@ public class Validator {
     }
 
     public static boolean isValidStringWithoutSymbols(String input) {
-        return input.matches("/^[a-zA-Zа-яА-ЯёЁ0-9\\s]+$/");
+        return input.matches("^[a-zA-Zа-яА-ЯёЁ0-9\\s]+$");
     }
 
     //Валидация класса из файла
