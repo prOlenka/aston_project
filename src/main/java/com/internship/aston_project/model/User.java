@@ -1,10 +1,11 @@
 package com.internship.aston_project.model;
 
+import java.util.Comparator;
+
 public class User implements Comparable<User> {
     private final String name;
     private final String password;
     private final String email;
-
 
     private User(Builder builder) {
         this.name = builder.name;
@@ -45,5 +46,23 @@ public class User implements Comparable<User> {
     @Override
     public String toString() {
         return name + "," + password + "," + email;
+    }
+
+    public static class NameCompare<T extends Comparable<T>> implements Comparator<T> {
+        public int compare(T a, T b) {
+            return ((User)a).name.compareTo(((User)b).name);
+        }
+    }
+
+    public static class PasswordCompare<T extends Comparable<T>> implements Comparator<T> {
+        public int compare(T a, T b) {
+            return ((User)a).password.compareTo(((User)b).password);
+        }
+    }
+
+    public static class EmailCompare<T extends Comparable<T>> implements Comparator<T> {
+        public int compare(T a, T b) {
+            return ((User)a).email.compareTo(((User)b).email);
+        }
     }
 }

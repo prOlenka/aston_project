@@ -64,6 +64,7 @@ public class AstonProjectApplication {
 				case "1" -> {
                     try {
                         data = fillData(scanner, factory);
+						System.out.println("Input data: " + data);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -72,9 +73,13 @@ public class AstonProjectApplication {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
-						sortStrategy.sort(data);
-						System.out.println("Данные успешно отсортированы.");
-						System.out.println("Отсортированный массив: " + data);
+						int result = sortStrategy.sort(data);
+						if(result == 0) {
+							System.out.println("Данные успешно отсортированы.");
+							System.out.println("Отсортированный массив: " + data);
+						} else {
+							System.out.println("Can not sorting only even by specified field");
+						}
 					}
 				}
 				case "3" -> {
