@@ -21,12 +21,12 @@ public class StudentFactory implements ObjectFactory<Student> {
                 return null;
             }
             if(!Validator.isValidDouble(parts[1])){
-                System.out.println("Некорректный формат ввода, средний бал может принимать только числовое значение +/n" +
+                System.out.println("Некорректный формат ввода, средний бал может принимать только числовое значение + \n" +
                         "(целое или нецелое).");
                 return null;
             }
             if(!Validator.isValidInteger(parts[2])){
-                System.out.println("Некорректный формат, номер зачет может быть только числом.");
+                System.out.println("Некорректный формат, номер зачетки может быть только числом.");
                 return null;
             }
             String recordBookNumber = parts[2];

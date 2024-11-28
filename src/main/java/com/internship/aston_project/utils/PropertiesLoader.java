@@ -17,9 +17,9 @@ public class PropertiesLoader {
 
     public static String getAddressBasedOnType(String type) {
         return switch (type) {
-            case "1" -> properties.getProperty("bus.file.path");
-            case "2" -> properties.getProperty("student.file.path");
-            case "3" -> properties.getProperty("user.file.path");
+            case "com.internship.aston_project.factory.BusFactory" -> properties.getProperty("bus.file.path");
+            case "com.internship.aston_project.factory.StudentFactory" -> properties.getProperty("student.file.path");
+            case "com.internship.aston_project.factory.UserFactory" -> properties.getProperty("user.file.path");
             default -> "Ошибка введённых данных, попробуйте снова";
         };
     }

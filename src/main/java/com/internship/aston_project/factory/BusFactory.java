@@ -13,7 +13,7 @@ public class BusFactory implements ObjectFactory<Bus> {
     public Bus create(Scanner scanner) {
         System.out.println("Введите номер, модель и пробег (через пробел):");
         String input = scanner.nextLine();
-        System.out.println(input + " input");//TODO
+
         String[] parts = input.split(" ");
         if (parts.length == 3) {
             if (Validator.isValidStringWithoutSymbols(parts[0])) {

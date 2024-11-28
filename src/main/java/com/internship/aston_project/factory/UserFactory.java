@@ -20,8 +20,8 @@ public class UserFactory implements ObjectFactory<User> {
                 return null;
             }
             if(!Validator.isValidPassword(parts[1])) {
-                System.out.println("Некорректный формат пароля. Пароль должен содержать цифры, /n" +
-                                    "заглавные и строчные латинские буквы и быть не меньше 6 символов");
+                System.out.println("Некорректный формат пароля. Пароль должен содержать цифры,\n" +
+                        "заглавные и строчные латинские буквы и быть не меньше 6 символов");
                 return null;
             }
             if(!Validator.isValidEmail(parts[2])) {
