@@ -26,7 +26,7 @@ public class StudentFactory implements ObjectFactory<Student> {
                 return null;
             }
             if(!Validator.isValidInteger(parts[2])){
-                System.out.println("Некорректный формат, номер зачет можеь быть только числом.");
+                System.out.println("Некорректный формат, номер зачетки может быть только числом.");
                 return null;
             }
             String recordBookNumber = parts[2];
