@@ -1,3 +1,0 @@
-Name: Alice, Email: alice@example.com, Password: password123
-Name: Bob, Email: bob@example.com, Password: securepass456
-Name: Charlie, Email: charlie@example.com, Password: qwerty789

@@ -1,3 +1,0 @@
-GroupNumber: CS-101, AverageGrade: 4.5, GradeBookNumber: RB001
-GroupNumber: CS-102, AverageGrade: 3.8, GradeBookNumber: RB002
-GroupNumber: CS-103, AverageGrade: 4.2, GradeBookNumber: RB003

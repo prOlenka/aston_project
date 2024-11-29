@@ -6,13 +6,14 @@ import com.internship.aston_project.factory.StudentFactory;
 import com.internship.aston_project.factory.UserFactory;
 import com.internship.aston_project.sort.QuickSort;
 import com.internship.aston_project.sort.SortStrategy;
-import com.internship.aston_project.utils.BinarySearch;
-import com.internship.aston_project.utils.Validator;
+import com.internship.aston_project.utils.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Function;
+
 
 public class AstonProjectApplication {
 	public static void main(String[] args) {
@@ -21,11 +22,12 @@ public class AstonProjectApplication {
 
 		System.out.println("Добро пожаловать в программу управления данными!");
 		while (running) {
-			System.out.println("\nВыберите тип данных:");
-			System.out.println("1. Автобусы");
-			System.out.println("2. Студенты");
-			System.out.println("3. Пользователи");
-			System.out.println("4. Выйти");
+			System.out.println("""
+				Выберите тип данных:
+				1. Автобусы
+				2. Студенты
+				3. Пользователи
+				4. Выйти""");
 
 			String typeChoice = scanner.nextLine();
 			switch (typeChoice) {
@@ -46,45 +48,60 @@ public class AstonProjectApplication {
 		BinarySearch<T> binarySearch = new BinarySearch<>();
 		boolean managing = true;
 
+		String type = null;
+		switch (factory.getClass().getSimpleName()){
+			case "StudentFactory" -> {type = "Student";}
+			case "UserFactory" -> {type = "User";}
+			case "BusFactory" -> {type = "Bus";}}
+
 		while (managing) {
-			System.out.printf("\nУправление данными типа %s:%n", factory.getClass().getSimpleName());
-			System.out.println("1. Заполнить данные");
-			System.out.println("2. Отсортировать данные");
-			System.out.println("3. Найти элемент (Бинарный поиск)");
-			System.out.println("4. Сохранить данные в файл");
-			System.out.println("5. Назад");
+			System.out.printf("Управление данными типа %s:%n", type);
+			System.out.println("""
+				1. Заполнить данные
+				2. Отсортировать данные
+				3. Найти элемент (Бинарный поиск)
+				4. Сохранить данные в файл
+				5. Назад""");
 
 			String choice = scanner.nextLine();
 			switch (choice) {
-				case "1" -> data = fillData(scanner, factory);
+				case "1" -> {
+                    try {
+                        data = fillData(scanner, factory);
+						System.out.println("Input data: " + data);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
 				case "2" -> {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
-						sortStrategy.sort(data);
-						System.out.println("Данные успешно отсортированы.");
-						System.out.println("Отсортированный массив: " + data);
+							sortStrategy.sort(data);
+							System.out.println("Данные успешно отсортированы.");
+							System.out.println("Отсортированный массив: " + data);
 					}
 				}
 				case "3" -> {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
-						System.out.println("Введите код для поиска: ");
-						String searchKey = scanner.nextLine();
-						T target = factory.createForSearch(searchKey);
-						if (target != null) {
-							List<T> foundItems = binarySearch.searchAll(data, target);
-							if (!foundItems.isEmpty()) {
-								System.out.println("Найденные элементы:");
-								for (T item : foundItems) {
-									System.out.println(item);
+						Function<T, ? extends Comparable> searchKey = SearchField.chooseField(scanner, factory);
+						if (searchKey != null) {
+							System.out.println("Введите ключ для поиска:");
+							String searchInput = scanner.nextLine();
+							T target = factory.createForSearch(searchInput);
+							if (target != null) {
+								List<T> foundItems = binarySearch.searchAll(data, target, searchKey);
+								if (!foundItems.isEmpty()) {
+									System.out.println("Найденные элементы:");
+									for (T item : foundItems) {
+										System.out.println(item);
+									}
+								} else {
+									System.out.println("Элементы не найдены.");
 								}
-							} else {
-								System.out.println("Элементы не найдены.");
 							}
-						} else {
-							System.out.println("Некорректный ввод для поиска.");
 						}
 					}
 				}
@@ -92,9 +109,7 @@ public class AstonProjectApplication {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
-						System.out.println("Введите путь и имя файла для сохранения данных: ");
-						String filePath = scanner.nextLine();
-						saveDataToFile(filePath, data);
+						saveDataToFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getSimpleName()), factory, data);
 					}
 				}
 				case "5" -> managing = false;
@@ -103,12 +118,13 @@ public class AstonProjectApplication {
 		}
 	}
 
-	private static <T extends Comparable<T>> List<T> fillData(Scanner scanner, ObjectFactory<T> factory) {
+	private static <T extends Comparable<T>> List<T> fillData(Scanner scanner, ObjectFactory<T> factory) throws IOException {
 		List<T> data = new ArrayList<>();
-		System.out.println("Выберите способ заполнения :");
-		System.out.println("1. Вручную");
-		System.out.println("2. Из файла");
-		System.out.println("3. Рандомно");
+		System.out.println("""
+			Выберите способ заполнения:
+			1. Вручную
+			2. Из файла
+			3. Рандомно""");
 
 		String choice = scanner.nextLine();
 		switch (choice) {
@@ -119,7 +135,7 @@ public class AstonProjectApplication {
 					int count = Integer.parseInt(countInput);
 					for (int i = 0; i < count; i++) {
 						System.out.printf("Введите данные для элемента %d:%n", i + 1);
-						T item = factory.create(scanner, true);
+						T item = factory.create(scanner, choice);
 						if (item != null) {
 							data.add(item);
 						} else {
@@ -127,26 +143,28 @@ public class AstonProjectApplication {
 							i--;
 						}
 					}
+					System.out.println("Данные успешно добавлены.");
 				} else {
 					System.out.println("Ошибка: введите целое число.");
 				}
 			}
 			case "2" -> {
-				System.out.println("Введите путь к файлу:");
-				String filePath = scanner.nextLine();
-				try {
-					List<String> lines = DataReader.readFile(filePath);
-					for (String line : lines) {
-						T item = factory.parse(line);
-						if (item != null) {
-							data.add(item);
-						} else {
-							System.out.println("Ошибка валидации строки: " + line);
+				List<String> listFromFile = FileUtils.readFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getSimpleName()));
+
+				for (String line : listFromFile) {
+					String formattedInput = FileUtils.parseLineByType(line, factory.getClass().getSimpleName());
+
+					try (Scanner lineScanner = new Scanner(formattedInput)) {
+						T object = factory.create(lineScanner, choice);
+						if (object != null) {
+							data.add(object);
 						}
 					}
+				}
+				if (data.isEmpty()) {
+					System.out.println("Ошибка: Данные не загружены из файла.");
+				}else {
 					System.out.println("Данные успешно загружены из файла.");
-				} catch (IOException e) {
-					System.out.println("Ошибка чтения файла: " + e.getMessage());
 				}
 			}
 
@@ -168,13 +186,10 @@ public class AstonProjectApplication {
 		return data;
 	}
 
-	private static <T extends Comparable<T>> void saveDataToFile(String filePath, List<T> data) {
-		List<String> lines = new ArrayList<>();
-		for (T item : data) {
-			lines.add(item.toString());
-		}
+
+	private static <T extends Comparable<T>> void saveDataToFile(String filePath, ObjectFactory<T> factory, List<T> data) {
 		try {
-			DataWriter.writeFile(filePath, lines);
+			FileUtils.prepareAndWrite(filePath, factory.getClass().getSimpleName(), data);
 			System.out.println("Данные успешно сохранены в файл.");
 		} catch (IOException e) {
 			System.out.println("Ошибка записи в файл: " + e.getMessage());
