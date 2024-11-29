@@ -69,7 +69,7 @@ public class StudentFactory implements ObjectFactory<Student> {
         // Генерация уникального номера зачётной книжки
         String recordBookNumber;
         do {
-            recordBookNumber = String.format("№%05d", RANDOM.nextInt(100000));
+            recordBookNumber = String.format("%05d", RANDOM.nextInt(100000));
         } while (!usedRecordBookNumbers.add(recordBookNumber));
 
         return new Student.Builder()

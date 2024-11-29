@@ -10,12 +10,12 @@ import java.util.Set;
 
 public class BusFactory implements ObjectFactory<Bus> {
     // Хранит уже использованные номера автобусов для проверки уникальности.
+    private final Set<String> usedBusNumbers = new HashSet<>();
     private static final String[] MODELS = {
             "Volvo", "Mercedes", "Scania", "MAN", "Iveco", "Ford", "DAF", "Renault"
     };
     private static final Random RANDOM = new Random();
 
-    private final Set<String> usedBusNumbers = new HashSet<>();
     @Override
     public Bus create(Scanner scanner, String choice) {
         // Считывает и создает объект Bus на основе пользовательского ввода.
@@ -63,8 +63,13 @@ public class BusFactory implements ObjectFactory<Bus> {
 
     @Override
     public Bus generateRandom() {
-        // Случайный номер (1–999)
-        int number = RANDOM.nextInt(999) + 1;
+        int number;
+        // Проверка на уникальность сгенерированного номера
+        do {
+            // Случайный номер (100–999)
+            number = RANDOM.nextInt(100,999) + 1;
+        }while(!usedBusNumbers.add(String.valueOf(number)));
+
         // Случайная модель из списка
         String model = MODELS[RANDOM.nextInt(MODELS.length)];
         // Случайный пробег (10к–200к км)
