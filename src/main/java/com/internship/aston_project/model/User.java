@@ -1,6 +1,8 @@
 package com.internship.aston_project.model;
 
 import java.util.Comparator;
+import lombok.Getter;
+@Getter
 
 public class User implements Comparable<User> {
     private final String name;

@@ -4,17 +4,16 @@ import com.internship.aston_project.factory.BusFactory;
 import com.internship.aston_project.factory.ObjectFactory;
 import com.internship.aston_project.factory.StudentFactory;
 import com.internship.aston_project.factory.UserFactory;
+import com.internship.aston_project.sort.OddEvenSort;
 import com.internship.aston_project.sort.QuickSort;
 import com.internship.aston_project.sort.SortStrategy;
-import com.internship.aston_project.utils.BinarySearch;
-import com.internship.aston_project.utils.FileUtils;
-import com.internship.aston_project.utils.PropertiesLoader;
-import com.internship.aston_project.utils.Validator;
+import com.internship.aston_project.utils.*;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Function;
 
 
 public class AstonProjectApplication {
@@ -50,8 +49,14 @@ public class AstonProjectApplication {
 		BinarySearch<T> binarySearch = new BinarySearch<>();
 		boolean managing = true;
 
+		String type = null;
+		switch (factory.getClass().getSimpleName()){
+			case "StudentFactory" -> {type = "Student";}
+			case "UserFactory" -> {type = "User";}
+			case "BusFactory" -> {type = "Bus";}}
+
 		while (managing) {
-			System.out.printf("Управление данными типа %s:%n", factory.getClass().getSimpleName());
+			System.out.printf("Управление данными типа %s:%n", type);
 			System.out.println("""
 				1. Заполнить данные
 				2. Отсортировать данные
@@ -73,12 +78,32 @@ public class AstonProjectApplication {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
+
 						int result = sortStrategy.sort(data);
 						if(result == 0) {
 							System.out.println("Данные успешно отсортированы.");
 							System.out.println("Отсортированный массив: " + data);
 						} else {
 							System.out.println("Can not sorting only even by specified field");
+              
+	/*				System.out.println("Выберите тип сортировки:"); //TODO
+	    			System.out.println("1. Быстрая сортировка");
+				  	System.out.println("2. Сортировка четных элементов");
+						String sortChoice = scanner.nextLine();
+						SortStrategy<T> chosenSortStrategy = switch (sortChoice) {
+							case "1" -> new QuickSort<>();
+							case "2" -> new OddEvenSort<>();
+							default -> null;
+						};
+						if (chosenSortStrategy != null) {
+							Function<T, ? extends Comparable> sortKey = SearchField.chooseField(scanner, factory);
+							if (sortKey != null) {
+								chosenSortStrategy.sort(data, sortKey);
+								System.out.println("Данные успешно отсортированы.");
+								System.out.println("Отсортированный массив: " + data);
+							}
+						} else {
+							System.out.println("Неверный выбор сортировки."); */
 						}
 					}
 				}
@@ -109,7 +134,6 @@ public class AstonProjectApplication {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
 						saveDataToFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getName()), factory, data);
-
 					}
 				}
 				case "5" -> managing = false;
@@ -135,7 +159,7 @@ public class AstonProjectApplication {
 					int count = Integer.parseInt(countInput);
 					for (int i = 0; i < count; i++) {
 						System.out.printf("Введите данные для элемента %d:%n", i + 1);
-						T item = factory.create(scanner);
+						T item = factory.create(scanner, choice);
 						if (item != null) {
 							data.add(item);
 						} else {
@@ -143,6 +167,7 @@ public class AstonProjectApplication {
 							i--;
 						}
 					}
+					System.out.println("Данные успешно добавлены.");
 				} else {
 					System.out.println("Ошибка: введите целое число.");
 				}
@@ -154,7 +179,7 @@ public class AstonProjectApplication {
 					String formattedInput = FileUtils.parseLineByType(line, factory.getClass().getName());
 
 					try (Scanner lineScanner = new Scanner(formattedInput)) {
-						T object = factory.create(lineScanner);
+						T object = factory.create(lineScanner, choice);
 						if (object != null) {
 							data.add(object);
 						}
@@ -165,8 +190,6 @@ public class AstonProjectApplication {
 				}else {
 					System.out.println("Данные успешно загружены из файла.");
 				}
-
-				return data;
 			}
 
 			case "3" -> {

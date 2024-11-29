@@ -1,7 +1,9 @@
 package com.internship.aston_project.model;
 
 import java.util.Comparator;
+import lombok.Getter;
 
+@Getter
 public class Student implements Comparable<Student> {
     private final int groupNumber;
     private final Double averageScore;

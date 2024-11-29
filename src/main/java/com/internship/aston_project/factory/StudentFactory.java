@@ -11,27 +11,28 @@ public class StudentFactory implements ObjectFactory<Student> {
     private final Set<String> usedRecordBookNumbers = new HashSet<>();
 
     @Override
-    public Student create(Scanner scanner) {
-        System.out.println("Введите номер группы, средний балл и номер зачетки (через пробел):");
+    public Student create(Scanner scanner, String choice) {
+        if(choice.equals("1")) System.out.println("Введите номер группы, средний балл и номер зачетки (через пробел):");
         String input = scanner.nextLine();
         String[] parts = input.split(" ");
         if (parts.length == 3){
+            if(parts[1].contains(",")) parts[1] = parts[1].replace(",", ".");
             if(!Validator.isValidInteger(parts[0])){
-                System.out.println("Некорректный формат группы. Номер группы должен быть числом.");
+                System.out.println("Некорректный формат ввода, номер группы может быть только числовым значением.");
                 return null;
             }
             if(!Validator.isValidDouble(parts[1])){
-                System.out.println("Некорректный формат ввода, средний бал может принимать только числовое значение + \n" +
-                        "(целое или нецелое).");
+                System.out.println("Некорректный формат ввода, средний бал может быть только числовым значением " +
+                        "(целым или нецелым).");
                 return null;
             }
             if(!Validator.isValidInteger(parts[2])){
-                System.out.println("Некорректный формат, номер зачетки может быть только числом.");
+                System.out.println("Некорректный формат ввода, номер зачетки может быть только числовым значением.");
                 return null;
             }
             String recordBookNumber = parts[2];
             if (!usedRecordBookNumbers.add(recordBookNumber)) {
-                System.out.println("Ошибка: номер зачётки уже используется. Попробуйте другой номер.");
+                System.out.println("Ошибка: номер зачётки " + recordBookNumber + " уже используется. Попробуйте другой номер.");
                 return null;
             }
             return new Student.Builder()
