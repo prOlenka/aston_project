@@ -9,6 +9,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class StudentFactory implements ObjectFactory<Student> {
+    // Хранит уже использованные номера зачетных книжек для проверки уникальности.
     private final Set<String> usedRecordBookNumbers = new HashSet<>();
     private static final Random RANDOM = new Random();
 
@@ -32,11 +33,15 @@ public class StudentFactory implements ObjectFactory<Student> {
                 System.out.println("Некорректный формат ввода, номер зачетки может быть только числовым значением.");
                 return null;
             }
+
+            // Проверка уникальности номера зачетной книжки.
             String recordBookNumber = parts[2];
             if (!usedRecordBookNumbers.add(recordBookNumber)) {
                 System.out.println("Ошибка: номер зачётки " + recordBookNumber + " уже используется. Попробуйте другой номер.");
                 return null;
             }
+
+            // Создание и возврат объекта Student.
             return new Student.Builder()
                     .setGroupNumber(Integer.parseInt(parts[0]))
                     .setAverageScore(Double.parseDouble(parts[1]))
@@ -48,6 +53,7 @@ public class StudentFactory implements ObjectFactory<Student> {
 
     @Override
     public String parse(String line) {
+        // Парсит строку для извлечения данных о Student.
         return line.replace("GroupNumber: ", "")
                 .replace(", AverageGrade: ", " ")
                 .replace(", GradeBookNumber: ", " ");
@@ -75,6 +81,7 @@ public class StudentFactory implements ObjectFactory<Student> {
 
     @Override
     public Student createForSearch(String searchKey) {
+        // Создает объект Student для поиска по номеру группы.
         try {
             int groupNumber = Integer.parseInt(searchKey);
             return new Student.Builder().setGroupNumber(groupNumber).build();

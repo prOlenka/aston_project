@@ -9,6 +9,7 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class BusFactory implements ObjectFactory<Bus> {
+    // Хранит уже использованные номера автобусов для проверки уникальности.
     private static final String[] MODELS = {
             "Volvo", "Mercedes", "Scania", "MAN", "Iveco", "Ford", "DAF", "Renault"
     };
@@ -17,11 +18,13 @@ public class BusFactory implements ObjectFactory<Bus> {
     private final Set<String> usedBusNumbers = new HashSet<>();
     @Override
     public Bus create(Scanner scanner, String choice) {
-        if(choice.equals("1")) System.out.println("Введите номер, модель и пробег (через пробел):");
+        // Считывает и создает объект Bus на основе пользовательского ввода.
+        if (choice.equals("1")) System.out.println("Введите номер, модель и пробег (через пробел):");
         String input = scanner.nextLine();
 
         String[] parts = input.split(" ");
         if (parts.length == 3) {
+            // Валидация полей ввода.
             if (!Validator.isValidInteger(parts[0])) {
                 System.out.println("Некорректный формат ввода, номер может быть только числовым значением.");
                 return null;
@@ -34,11 +37,13 @@ public class BusFactory implements ObjectFactory<Bus> {
                 System.out.println("Некорректный формат ввода, пробег может быть только числовым значением");
                 return null;
             }
+            // Проверка уникальности номера автобуса.
             String busNumber = parts[0];
             if (!usedBusNumbers.add(busNumber)) {
                 System.out.println("Ошибка: " + busNumber + " уже используется. Попробуйте другой номер автобуса");
                 return null;
             }
+            // Создание и возврат объекта Bus.
             return new Bus.Builder()
                     .setNumber(Integer.parseInt(parts[0]))
                     .setModel(parts[1])
@@ -50,6 +55,7 @@ public class BusFactory implements ObjectFactory<Bus> {
 
     @Override
     public String parse(String line) {
+        // Парсит строку для извлечения данных о Bus.
         return line.replace("Number: ", "")
                 .replace(", Model: ", " ")
                 .replace(", Mileage: ", " ");
@@ -64,6 +70,7 @@ public class BusFactory implements ObjectFactory<Bus> {
         // Случайный пробег (10к–200к км)
         int mileage = RANDOM.nextInt(190_001) + 10_000;
 
+        // Генерирует случайный объект Bus.
         return new Bus.Builder()
                 .setNumber(number)
                 .setModel(model)
@@ -73,12 +80,13 @@ public class BusFactory implements ObjectFactory<Bus> {
 
     @Override
     public Bus createForSearch(String searchKey) {
-        // Попытка обработать как номер автобуса
+        // Создает объект Bus для поиска по заданному ключу.
         try {
             int number = Integer.parseInt(searchKey);
-            return new Bus.Builder().setNumber(number).build();  // Если это число, ищем по номеру
+            return new Bus.Builder().setNumber(number).build();
         } catch (NumberFormatException e) {
-            return new Bus.Builder().setModel(searchKey).build();  // Если это строка, ищем по модели
+            System.out.println("Ошибка: недопустимый формат ключа поиска.");
+            return null;
         }
     }
 }
