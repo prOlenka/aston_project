@@ -46,7 +46,8 @@ public class AstonProjectApplication {
 		scanner.close();
 	}
 
-	private static <T extends Comparable<T>> void manageData(List<T> data, SortStrategy<T> sortStrategy, Scanner scanner, ObjectFactory<T> factory) {
+	private static <T extends Comparable<T>> void manageData(List<T> data, SortStrategy<T> sortStrategy,
+															 Scanner scanner, ObjectFactory<T> factory) {
 		// Создание объекта для бинарного поиска
 		BinarySearch<T> binarySearch = new BinarySearch<>();
 		boolean managing = true;
@@ -72,7 +73,7 @@ public class AstonProjectApplication {
 			switch (choice) {
 				case "1" -> {
 					try {
-						data = fillData(scanner, factory); // Заполнение данных
+						fillData(data, scanner, factory); // Заполнение данных
 						System.out.println("Input data: " + data);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
@@ -117,7 +118,8 @@ public class AstonProjectApplication {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
 						// Сохранение данных в файл
-						saveDataToFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getSimpleName()), factory, data);
+						saveDataToFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getSimpleName()),
+								factory, data);
 					}
 				}
 				case "5" -> managing = false; // Возврат в главное меню
@@ -126,8 +128,8 @@ public class AstonProjectApplication {
 		}
 	}
 
-	private static <T extends Comparable<T>> List<T> fillData(Scanner scanner, ObjectFactory<T> factory) throws IOException {
-		List<T> data = new ArrayList<>();
+	private static <T extends Comparable<T>> void fillData(List<T> data, Scanner scanner, ObjectFactory<T> factory)
+			throws IOException {
 		System.out.println("""
 			Выберите способ заполнения:
 			1. Вручную
@@ -159,7 +161,8 @@ public class AstonProjectApplication {
 			}
 			case "2" -> {
 				// Загрузка данных из файла
-				List<String> listFromFile = FileUtils.readFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getSimpleName()));
+				List<String> listFromFile = FileUtils.readFile(PropertiesLoader
+						.getAddressBasedOnType(factory.getClass().getSimpleName()));
 
 				for (String line : listFromFile) {
 					String formattedInput = FileUtils.parseLineByType(line, factory.getClass().getSimpleName());
@@ -194,7 +197,6 @@ public class AstonProjectApplication {
 			}
 			default -> System.out.println("Неверный выбор. Попробуйте снова.");
 		}
-		return data;
 	}
 
 
