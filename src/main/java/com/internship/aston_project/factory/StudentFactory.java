@@ -8,32 +8,45 @@ import java.util.Scanner;
 import java.util.Set;
 
 public class StudentFactory implements ObjectFactory<Student> {
+    // Хранит уже использованные номера зачетных книжек для проверки уникальности.
     private final Set<String> usedRecordBookNumbers = new HashSet<>();
 
     @Override
-    public Student create(Scanner scanner, boolean fullInput) {
-        System.out.println("Введите номер группы, средний балл и номер зачетки (через пробел):");
+    public Student create(Scanner scanner, String choice) {
+        // Считывает и создает объект Student на основе пользовательского ввода.
+        if (choice.equals("1"))
+            System.out.println("Введите номер группы, средний балл и номер зачетки (через пробел):");
+
         String input = scanner.nextLine();
         String[] parts = input.split(" ");
-        if (parts.length == 3){
-            if(!Validator.isValidInteger(parts[0])){
-                System.out.println("Некорректный формат группы. Номер группы должен быть числом.");
+
+        if (parts.length == 3) {
+            // Замена запятой на точку в среднем балле, если необходимо.
+            if (parts[1].contains(","))
+                parts[1] = parts[1].replace(",", ".");
+
+            // Валидация полей ввода.
+            if (!Validator.isValidInteger(parts[0])) {
+                System.out.println("Некорректный формат ввода, номер группы может быть только числовым значением.");
                 return null;
             }
-            if(!Validator.isValidDouble(parts[1])){
-                System.out.println("Некорректный формат ввода, средний бал может принимать только числовое значение +/n" +
-                        "(целое или нецелое).");
+            if (!Validator.isValidDouble(parts[1])) {
+                System.out.println("Некорректный формат ввода, средний балл может быть только числовым значением (целым или нецелым).");
                 return null;
             }
-            if(!Validator.isValidInteger(parts[2])){
-                System.out.println("Некорректный формат, номер зачетки может быть только числом.");
+            if (!Validator.isValidInteger(parts[2])) {
+                System.out.println("Некорректный формат ввода, номер зачетки может быть только числовым значением.");
                 return null;
             }
+
+            // Проверка уникальности номера зачетной книжки.
             String recordBookNumber = parts[2];
             if (!usedRecordBookNumbers.add(recordBookNumber)) {
-                System.out.println("Ошибка: номер зачётки уже используется. Попробуйте другой номер.");
+                System.out.println("Ошибка: номер зачётки " + recordBookNumber + " уже используется. Попробуйте другой номер.");
                 return null;
             }
+
+            // Создание и возврат объекта Student.
             return new Student.Builder()
                     .setGroupNumber(Integer.parseInt(parts[0]))
                     .setAverageScore(Double.parseDouble(parts[1]))
@@ -45,6 +58,7 @@ public class StudentFactory implements ObjectFactory<Student> {
 
     @Override
     public String parse(String line) {
+        // Парсит строку для извлечения данных о Student.
         return line.replace("GroupNumber: ", "")
                 .replace(", AverageGrade: ", " ")
                 .replace(", GradeBookNumber: ", " ");
@@ -52,11 +66,13 @@ public class StudentFactory implements ObjectFactory<Student> {
 
     @Override
     public Student generateRandom() {
+        // Генерирует случайный объект Student с уникальным номером зачетной книжки.
         int groupNumber = 100 + (int) (Math.random() * 900);
         double averageScore = Math.round((2 + Math.random() * 3) * 100.0) / 100.0;
+
         String recordBookNumber;
         do {
-            recordBookNumber = " №" + (int) (Math.random() * 100000);
+            recordBookNumber = "№" + (int) (Math.random() * 100000);
         } while (!usedRecordBookNumbers.add(recordBookNumber));
 
         return new Student.Builder()
@@ -68,6 +84,7 @@ public class StudentFactory implements ObjectFactory<Student> {
 
     @Override
     public Student createForSearch(String searchKey) {
+        // Создает объект Student для поиска по номеру группы.
         try {
             int groupNumber = Integer.parseInt(searchKey);
             return new Student.Builder().setGroupNumber(groupNumber).build();

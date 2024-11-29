@@ -1,7 +1,9 @@
 package com.internship.aston_project.sort;
 
 import java.util.List;
+import java.util.function.Function;
 
 public interface SortStrategy<T> {
-    void sort(List<T> items);
+
+    int sort(List<T> items);  // Метод для сортировки списка элементов
 }
