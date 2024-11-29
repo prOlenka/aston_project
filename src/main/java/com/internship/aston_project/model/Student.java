@@ -1,12 +1,12 @@
 package com.internship.aston_project.model;
 
+import java.util.Comparator;
 import lombok.Getter;
-
 
 @Getter
 public class Student implements Comparable<Student> {
     private final int groupNumber;
-    private final double averageScore;
+    private final Double averageScore;
     private final String recordBookNumber;
 
 
@@ -50,5 +50,23 @@ public class Student implements Comparable<Student> {
     @Override
     public String toString() {
         return groupNumber + "," + averageScore + "," + recordBookNumber;
+    }
+
+    public static class GroupNumberCompare<T extends Comparable<T>> implements Comparator<T> {
+        public int compare(T a, T b) {
+            return Integer.compare(((Student)a).groupNumber, ((Student)b).groupNumber);
+        }
+    }
+
+    public static class AverageScoreCompare<T extends Comparable<T>> implements Comparator<T> {
+        public int compare(T a, T b) {
+            return ((Student)a).averageScore.compareTo(((Student)b).averageScore);
+        }
+    }
+
+    public static class RecordBookNumberCompare<T extends Comparable<T>> implements Comparator<T> {
+        public int compare(T a, T b) {
+            return ((Student)a).recordBookNumber.compareTo(((Student)b).recordBookNumber);
+        }
     }
 }

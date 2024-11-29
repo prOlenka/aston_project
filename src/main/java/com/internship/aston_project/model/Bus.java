@@ -1,5 +1,6 @@
 package com.internship.aston_project.model;
 
+import java.util.Comparator;
 import lombok.Getter;
 
 @Getter
@@ -47,6 +48,24 @@ public class Bus implements Comparable<Bus> {
     @Override
     public String toString() {
         return number + "," + model + "," + mileage;
+    }
+
+    public static class NumberCompare<T extends Comparable<T>> implements Comparator<T> {
+        public int compare(T a, T b) {
+            return Integer.compare(((Bus)a).number, ((Bus)b).number);
+        }
+    }
+
+    public static class ModelCompare<T extends Comparable<T>> implements Comparator<T> {
+        public int compare(T a, T b) {
+            return ((Bus)a).model.compareTo(((Bus)b).model);
+        }
+    }
+
+    public static class MileageCompare<T extends Comparable<T>> implements Comparator<T> {
+        public int compare(T a, T b) {
+            return Integer.compare(((Bus)a).mileage, ((Bus)b).mileage);
+        }
     }
 }
 

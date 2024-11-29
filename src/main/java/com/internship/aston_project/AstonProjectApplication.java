@@ -69,6 +69,7 @@ public class AstonProjectApplication {
 				case "1" -> {
                     try {
                         data = fillData(scanner, factory);
+						System.out.println("Input data: " + data);
                     } catch (IOException e) {
                         throw new RuntimeException(e);
                     }
@@ -77,9 +78,17 @@ public class AstonProjectApplication {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
-						System.out.println("Выберите тип сортировки:");
-						System.out.println("1. Быстрая сортировка");
-						System.out.println("2. Сортировка четных элементов");
+
+						int result = sortStrategy.sort(data);
+						if(result == 0) {
+							System.out.println("Данные успешно отсортированы.");
+							System.out.println("Отсортированный массив: " + data);
+						} else {
+							System.out.println("Can not sorting only even by specified field");
+              
+	/*				System.out.println("Выберите тип сортировки:"); //TODO
+	    			System.out.println("1. Быстрая сортировка");
+				  	System.out.println("2. Сортировка четных элементов");
 						String sortChoice = scanner.nextLine();
 						SortStrategy<T> chosenSortStrategy = switch (sortChoice) {
 							case "1" -> new QuickSort<>();
@@ -94,7 +103,7 @@ public class AstonProjectApplication {
 								System.out.println("Отсортированный массив: " + data);
 							}
 						} else {
-							System.out.println("Неверный выбор сортировки.");
+							System.out.println("Неверный выбор сортировки."); */
 						}
 					}
 				}
