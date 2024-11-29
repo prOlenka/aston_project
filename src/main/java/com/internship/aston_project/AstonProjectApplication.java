@@ -4,7 +4,6 @@ import com.internship.aston_project.factory.BusFactory;
 import com.internship.aston_project.factory.ObjectFactory;
 import com.internship.aston_project.factory.StudentFactory;
 import com.internship.aston_project.factory.UserFactory;
-import com.internship.aston_project.sort.OddEvenSort;
 import com.internship.aston_project.sort.QuickSort;
 import com.internship.aston_project.sort.SortStrategy;
 import com.internship.aston_project.utils.*;
@@ -78,32 +77,13 @@ public class AstonProjectApplication {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
-
-						int result = sortStrategy.sort(data);
-						if(result == 0) {
+						Function<T, ? extends Comparable> sortKey = SearchField.chooseField(scanner, factory);
+						if (sortKey != null) {
+							sortStrategy.sort(data);
 							System.out.println("Данные успешно отсортированы.");
 							System.out.println("Отсортированный массив: " + data);
-						} else {
+						}else {
 							System.out.println("Can not sorting only even by specified field");
-              
-	/*				System.out.println("Выберите тип сортировки:"); //TODO
-	    			System.out.println("1. Быстрая сортировка");
-				  	System.out.println("2. Сортировка четных элементов");
-						String sortChoice = scanner.nextLine();
-						SortStrategy<T> chosenSortStrategy = switch (sortChoice) {
-							case "1" -> new QuickSort<>();
-							case "2" -> new OddEvenSort<>();
-							default -> null;
-						};
-						if (chosenSortStrategy != null) {
-							Function<T, ? extends Comparable> sortKey = SearchField.chooseField(scanner, factory);
-							if (sortKey != null) {
-								chosenSortStrategy.sort(data, sortKey);
-								System.out.println("Данные успешно отсортированы.");
-								System.out.println("Отсортированный массив: " + data);
-							}
-						} else {
-							System.out.println("Неверный выбор сортировки."); */
 						}
 					}
 				}
@@ -111,21 +91,22 @@ public class AstonProjectApplication {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
-						System.out.println("Введите код для поиска: ");
-						String searchKey = scanner.nextLine();
-						T target = factory.createForSearch(searchKey);
-						if (target != null) {
-							List<T> foundItems = binarySearch.searchAll(data, target);
-							if (!foundItems.isEmpty()) {
-								System.out.println("Найденные элементы:");
-								for (T item : foundItems) {
-									System.out.println(item);
+						Function<T, ? extends Comparable> searchKey = SearchField.chooseField(scanner, factory);
+						if (searchKey != null) {
+							System.out.println("Введите ключ для поиска:");
+							String searchInput = scanner.nextLine();
+							T target = factory.createForSearch(searchInput);
+							if (target != null) {
+								List<T> foundItems = binarySearch.searchAll(data, target, searchKey);
+								if (!foundItems.isEmpty()) {
+									System.out.println("Найденные элементы:");
+									for (T item : foundItems) {
+										System.out.println(item);
+									}
+								} else {
+									System.out.println("Элементы не найдены.");
 								}
-							} else {
-								System.out.println("Элементы не найдены.");
 							}
-						} else {
-							System.out.println("Некорректный ввод для поиска.");
 						}
 					}
 				}
@@ -133,7 +114,7 @@ public class AstonProjectApplication {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
-						saveDataToFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getName()), factory, data);
+						saveDataToFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getSimpleName()), factory, data);
 					}
 				}
 				case "5" -> managing = false;
@@ -173,10 +154,10 @@ public class AstonProjectApplication {
 				}
 			}
 			case "2" -> {
-				List<String> listFromFile = FileUtils.readFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getName()));
+				List<String> listFromFile = FileUtils.readFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getSimpleName()));
 
 				for (String line : listFromFile) {
-					String formattedInput = FileUtils.parseLineByType(line, factory.getClass().getName());
+					String formattedInput = FileUtils.parseLineByType(line, factory.getClass().getSimpleName());
 
 					try (Scanner lineScanner = new Scanner(formattedInput)) {
 						T object = factory.create(lineScanner, choice);
@@ -213,7 +194,7 @@ public class AstonProjectApplication {
 
 	private static <T extends Comparable<T>> void saveDataToFile(String filePath, ObjectFactory<T> factory, List<T> data) {
 		try {
-			FileUtils.prepareAndWrite(filePath, factory.getClass().getName(), data);
+			FileUtils.prepareAndWrite(filePath, factory.getClass().getSimpleName(), data);
 			System.out.println("Данные успешно сохранены в файл.");
 		} catch (IOException e) {
 			System.out.println("Ошибка записи в файл: " + e.getMessage());

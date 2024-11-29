@@ -5,5 +5,5 @@ import java.util.function.Function;
 
 public interface SortStrategy<T> {
 
-    void sort(List<T> items, Function<T, ? extends Comparable> keyExtractor);
+    int sort(List<T> items);
 }

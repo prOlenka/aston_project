@@ -19,23 +19,32 @@ public class SearchField {
         Map<String, Function<T, ? extends Comparable>> fieldMap = new HashMap<>();
 
         if (factory instanceof BusFactory) {
-            System.out.println("1. Номер автобуса");
-            System.out.println("2. Модель");
-            System.out.println("3. Пробег");
+            System.out.println("""
+                        Выберете поле:
+                        1.Номер
+                        2.Модель
+                        3.Прообег
+                        """);
             fieldMap.put("1", bus -> ((Bus) bus).getNumber());
             fieldMap.put("2", bus -> ((Bus) bus).getModel());
             fieldMap.put("3", bus -> ((Bus) bus).getMileage());
         } else if (factory instanceof StudentFactory) {
-            System.out.println("1. Номер группы");
-            System.out.println("2. Средний балл");
-            System.out.println("3. Номер зачетной книжки");
+            System.out.println("""
+                        Выберете поле:
+                        1.Номер группы
+                        2.Средний балл
+                        3.Номер зачётки
+                        """);
             fieldMap.put("1", student -> ((Student) student).getGroupNumber());
             fieldMap.put("2", student -> ((Student) student).getAverageScore());
             fieldMap.put("3", student -> ((Student) student).getRecordBookNumber());
         } else if (factory instanceof UserFactory) {
-            System.out.println("1. Имя");
-            System.out.println("2. Пароль");
-            System.out.println("3. Email");
+            System.out.println("""
+                        Выберете поле:
+                        1.Имя
+                        2.Пароль
+                        3.Email
+                        """);
             fieldMap.put("1", user -> ((User) user).getName());
             fieldMap.put("2", user -> ((User) user).getPassword());
             fieldMap.put("3", user -> ((User) user).getEmail());

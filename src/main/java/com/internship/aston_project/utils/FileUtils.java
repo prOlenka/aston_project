@@ -43,8 +43,8 @@ public class FileUtils {
             String[] parts = item.toString().split(",\\s*");
             if (parts.length >= 3) {
                 formattedLines.add(filePrefix(
-                        type.equals("com.internship.aston_project.factory.BusFactory") ? "Bus" :
-                                type.equals("com.internship.aston_project.factory.StudentFactory") ? "Student" : "User",
+                        type.equals("BusFactory") ? "Bus" :
+                                type.equals("StudentFactory") ? "Student" : "User",
                         parts[0].trim(), parts[1].trim(), parts[2].trim()
                 ));
             }
@@ -56,9 +56,9 @@ public class FileUtils {
 
     public static String parseLineByType(String line, String type) {
         return switch (type) {
-            case "com.internship.aston_project.factory.BusFactory" -> new BusFactory().parse(line);
-            case "com.internship.aston_project.factory.StudentFactory" -> new StudentFactory().parse(line);
-            case "com.internship.aston_project.factory.UserFactory" -> new UserFactory().parse(line);
+            case "BusFactory" -> new BusFactory().parse(line);
+            case "StudentFactory" -> new StudentFactory().parse(line);
+            case "UserFactory" -> new UserFactory().parse(line);
             default -> throw new IllegalArgumentException("Неизвестный тип: " + type);
         };
     }

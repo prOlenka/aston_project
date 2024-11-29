@@ -8,6 +8,7 @@ import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
+import java.util.function.Function;
 
 public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
     private Comparator<T> comparator;
@@ -20,10 +21,13 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
         String fieldChoice = null;
         switch(items.get(0).getClass().getSimpleName()) {
             case "Bus" -> {
-                System.out.println("Select field");
-                System.out.println("1. number");
-                System.out.println("2. model");
-                System.out.println("3. mileage");
+                System.out.println("""
+                        Выберете поле:
+                        1.Номер
+                        2.Модель
+                        3.Прообег
+                        """);
+
                 fieldChoice = scanner.nextLine();
                 switch (fieldChoice) {
                     case "1" -> {
@@ -41,10 +45,12 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
                 }
             }
             case "Student" -> {
-                System.out.println("Select field");
-                System.out.println("1. groupNumber");
-                System.out.println("2. averageScore");
-                System.out.println("3. recordBookNumber");
+                System.out.println("""
+                        Выберете поле:
+                        1.Номер группы
+                        2.Средний балл
+                        3.Номер зачётки
+                        """);
                 fieldChoice = scanner.nextLine();
                 switch (fieldChoice) {
                     case "1" -> {
@@ -62,10 +68,12 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
                 }
             }
             case "User" -> {
-                System.out.println("Select field");
-                System.out.println("1. name");
-                System.out.println("2. password");
-                System.out.println("3. email");
+                System.out.println("""
+                        Выберете поле:
+                        1.Имя
+                        2.Пароль
+                        3.Email
+                        """);
                 fieldChoice = scanner.nextLine();
                 switch (fieldChoice) {
                     case "1" -> {
@@ -83,9 +91,11 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
                 }
             }
         }
-        System.out.println("Select type sort");
-        System.out.println("1. natural order");
-        System.out.println("2. sort only even");
+        System.out.println("""
+        Выбрать способ сортировки:
+        1.Обычный порядок
+        2.Только чётные числа
+        """);
         String typeSort = scanner.nextLine();
         switch(typeSort) {
             case "1" -> { }
@@ -104,30 +114,12 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
             } else {
                 return -1;
             }
-/* import java.util.function.Function;
-
-public class QuickSort<T> implements SortStrategy<T> {
-    @Override
-    public void sort(List<T> items, Function<T, ? extends Comparable> keyExtractor) {
-        // Ничего нет, не сортируем
-        if (items == null || items.size() <= 1) return;
-        // Вызвать быстр сортир
-        quickSort(items, 0, items.size() - 1, keyExtractor);
-    }
-
-    private void quickSort(List<T> items, int low, int high, Function<T, ? extends Comparable> keyExtractor) {
-        if (low < high) {
-            // Разделяем массив на части относительно опорного элемента
-            int pivotIndex = partition(items, low, high, keyExtractor);
-            // Проверяем левую часть
-            quickSort(items, low, pivotIndex - 1, keyExtractor);
-            // Проверяем правую часть
-            quickSort(items, pivotIndex + 1, high, keyExtractor); */ 
-  //TODO
 
         }
         return -1;
     }
+
+
 
     class NaturalSort implements Sortable<T> {
         public int partition(List<T> items, int low, int high) {
@@ -183,23 +175,6 @@ public class QuickSort<T> implements SortStrategy<T> {
                 throw new RuntimeException(e);
             }
         }
- /*   private int partition(List<T> items, int low, int high, Function<T, ? extends Comparable> keyExtractor) {
-        // Выбираем последний элемент как опорный
-        T pivot = items.get(high);
-        // Указатель для разделения элементов
-        int i = low - 1;
-        // Проходим по массиву от low до high-1
-        for (int j = low; j < high; j++) {
-            // Если текущий элемент меньше или равен опорному, перемещаем его в левую часть
-            if (keyExtractor.apply(items.get(j)).compareTo(keyExtractor.apply(pivot)) <= 0) {
-                i++;
-                swap(items, i, j); // Обмениваем элементы
-            }
-        }
-        // Помещаем опорный элемент в свою позицию
-        swap(items, i + 1, high);
-        return i + 1; // Возвращаем индекс опорного элемента */
-      //TODO
     }
 
     private void swap(List<T> items, int i, int j) {
