@@ -34,7 +34,7 @@ public class BusFactory implements ObjectFactory<Bus> {
                 System.out.println("Некорректный формат ввода, пробег может быть только числовым значением");
                 return null;
             }
-            String busNumber = parts[2];
+            String busNumber = parts[0];
             if (!usedBusNumbers.add(busNumber)) {
                 System.out.println("Ошибка: " + busNumber + " уже используется. Попробуйте другой номер автобуса");
                 return null;
