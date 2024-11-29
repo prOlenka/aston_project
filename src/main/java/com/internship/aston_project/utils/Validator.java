@@ -47,6 +47,10 @@ public class Validator {
         return input.matches("^[a-zA-Zа-яА-ЯёЁ0-9\\s]+$");
     }
 
+    public static boolean isValidRecordBookNumber(String input) {
+        return input.matches("^№\\d+$");
+    }
+
     // Валидация типа объекта в зависимости от строки (например, проверка, является ли строка значением поля объекта)
     public static <T> boolean fileValidation(String input, Class<T> type) {
         Class<?> receivedType = switch (input) {

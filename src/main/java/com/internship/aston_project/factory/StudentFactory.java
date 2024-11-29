@@ -29,8 +29,8 @@ public class StudentFactory implements ObjectFactory<Student> {
                         "(целым или нецелым).");
                 return null;
             }
-            if(!Validator.isValidInteger(parts[2])){
-                System.out.println("Некорректный формат ввода, номер зачетки может быть только числовым значением.");
+            if(!Validator.isValidRecordBookNumber(parts[2])){
+                System.out.println("Некорректный формат ввода, номер зачетки должен начинаться с №.");
                 return null;
             }
 
