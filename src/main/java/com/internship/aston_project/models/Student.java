@@ -1,16 +1,60 @@
-package com.internship.aston_project.models;
+package model;
 
-import lombok.Getter;
+public class Student implements Comparable<Student> {
+    private final int groupNumber;
+    private final double averageScore;
+    private final String recordBookNumber;
 
-@Getter
-public class Student {
-    private final int groupName;
-    private final int averageScore;
-    private final int gradeBookNumber;
+    private Student(Builder builder) {
+        this.groupNumber = builder.groupNumber;
+        this.averageScore = builder.averageScore;
+        this.recordBookNumber = builder.recordBookNumber;
+    }
 
-    private Student(int groupName, int averageScore, int gradeBookNumber) {
-        this.groupName = groupName;
-        this.averageScore = averageScore;
-        this.gradeBookNumber = gradeBookNumber;
+    public int getGroupNumber() {
+        return groupNumber;
+    }
+
+    public double getAverageScore() {
+        return averageScore;
+    }
+
+    public String getRecordBookNumber() {
+        return recordBookNumber;
+    }
+
+    public static class Builder {
+        private int groupNumber;
+        private double averageScore;
+        private String recordBookNumber;
+
+        public Builder setGroupNumber(int groupNumber) {
+            this.groupNumber = groupNumber;
+            return this;
+        }
+
+        public Builder setAverageScore(double averageScore) {
+            this.averageScore = averageScore;
+            return this;
+        }
+
+        public Builder setRecordBookNumber(String recordBookNumber) {
+            this.recordBookNumber = recordBookNumber;
+            return this;
+        }
+
+        public Student build() {
+            return new Student(this);
+        }
+    }
+
+    @Override
+    public int compareTo(Student other) {
+        return Integer.compare(this.groupNumber, other.groupNumber);
+    }
+
+    @Override
+    public String toString() {
+        return groupNumber + "," + averageScore + "," + recordBookNumber;
     }
 }
