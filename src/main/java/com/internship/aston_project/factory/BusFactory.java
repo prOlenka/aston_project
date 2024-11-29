@@ -4,13 +4,18 @@ import com.internship.aston_project.model.Bus;
 import com.internship.aston_project.utils.Validator;
 
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.Set;
 
 public class BusFactory implements ObjectFactory<Bus> {
     // Хранит уже использованные номера автобусов для проверки уникальности.
-    private final Set<String> usedBusNumbers = new HashSet<>();
+    private static final String[] MODELS = {
+            "Volvo", "Mercedes", "Scania", "MAN", "Iveco", "Ford", "DAF", "Renault"
+    };
+    private static final Random RANDOM = new Random();
 
+    private final Set<String> usedBusNumbers = new HashSet<>();
     @Override
     public Bus create(Scanner scanner, String choice) {
         // Считывает и создает объект Bus на основе пользовательского ввода.
@@ -29,13 +34,13 @@ public class BusFactory implements ObjectFactory<Bus> {
                 return null;
             }
             if (!Validator.isValidInteger(parts[2])) {
-                System.out.println("Некорректный формат ввода, пробег может быть только числовым значением.");
+                System.out.println("Некорректный формат ввода, пробег может быть только числовым значением");
                 return null;
             }
             // Проверка уникальности номера автобуса.
-            String busNumber = parts[2];
+            String busNumber = parts[0];
             if (!usedBusNumbers.add(busNumber)) {
-                System.out.println("Ошибка: " + busNumber + " уже используется. Попробуйте другой номер автобуса.");
+                System.out.println("Ошибка: " + busNumber + " уже используется. Попробуйте другой номер автобуса");
                 return null;
             }
             // Создание и возврат объекта Bus.
@@ -58,11 +63,18 @@ public class BusFactory implements ObjectFactory<Bus> {
 
     @Override
     public Bus generateRandom() {
+        // Случайный номер (1–999)
+        int number = RANDOM.nextInt(999) + 1;
+        // Случайная модель из списка
+        String model = MODELS[RANDOM.nextInt(MODELS.length)];
+        // Случайный пробег (10к–200к км)
+        int mileage = RANDOM.nextInt(190_001) + 10_000;
+
         // Генерирует случайный объект Bus.
         return new Bus.Builder()
-                .setNumber((int) (Math.random() * 1000))
-                .setModel("Model" + (int) (Math.random() * 100))
-                .setMileage((int) (Math.random() * 50000))
+                .setNumber(number)
+                .setModel(model)
+                .setMileage(mileage)
                 .build();
     }
 

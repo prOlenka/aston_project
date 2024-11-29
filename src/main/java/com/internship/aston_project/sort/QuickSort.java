@@ -8,7 +8,6 @@ import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.Function;
 
 public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
     private Comparator<T> comparator;

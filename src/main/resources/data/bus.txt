@@ -1,6 +1,3 @@
 Number: 101, Model: Mercedes, Mileage: 120000
 Number: 202, Model: Volvo, Mileage: 90000
-Number: 303, Model: Coach, Mileage: 75000101
-Number: 101, Model: Mercedes, Mileage: 120000
-Number: 202, Model: Volvo, Mileage: 90000
-Number: 303, Model: Coach, Mileage: 75000101
+Number: 303, Model: Coach, Mileage: 75000

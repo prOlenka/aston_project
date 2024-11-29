@@ -74,10 +74,10 @@ public class AstonProjectApplication {
 					try {
 						data = fillData(scanner, factory); // Заполнение данных
 						System.out.println("Input data: " + data);
-					} catch (IOException e) {
-						throw new RuntimeException(e);
-					}
-				}
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
 				case "2" -> {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
@@ -129,10 +129,10 @@ public class AstonProjectApplication {
 	private static <T extends Comparable<T>> List<T> fillData(Scanner scanner, ObjectFactory<T> factory) throws IOException {
 		List<T> data = new ArrayList<>();
 		System.out.println("""
-            Выберите способ заполнения:
-            1. Вручную
-            2. Из файла
-            3. Рандомно""");
+			Выберите способ заполнения:
+			1. Вручную
+			2. Из файла
+			3. Рандомно""");
 
 		String choice = scanner.nextLine();
 		switch (choice) {
@@ -160,8 +160,10 @@ public class AstonProjectApplication {
 			case "2" -> {
 				// Загрузка данных из файла
 				List<String> listFromFile = FileUtils.readFile(PropertiesLoader.getAddressBasedOnType(factory.getClass().getSimpleName()));
+
 				for (String line : listFromFile) {
 					String formattedInput = FileUtils.parseLineByType(line, factory.getClass().getSimpleName());
+
 					try (Scanner lineScanner = new Scanner(formattedInput)) {
 						T object = factory.create(lineScanner, choice);
 						if (object != null) {
@@ -171,10 +173,11 @@ public class AstonProjectApplication {
 				}
 				if (data.isEmpty()) {
 					System.out.println("Ошибка: Данные не загружены из файла.");
-				} else {
+				}else {
 					System.out.println("Данные успешно загружены из файла.");
 				}
 			}
+
 			case "3" -> {
 				// Генерация случайных данных
 				System.out.println("Введите количество элементов:");
@@ -193,6 +196,7 @@ public class AstonProjectApplication {
 		}
 		return data;
 	}
+
 
 	private static <T extends Comparable<T>> void saveDataToFile(String filePath, ObjectFactory<T> factory, List<T> data) {
 		// Сохранение данных в файл
