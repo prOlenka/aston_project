@@ -77,14 +77,9 @@ public class AstonProjectApplication {
 					if (data.isEmpty()) {
 						System.out.println("Данные отсутствуют. Сначала заполните массив.");
 					} else {
-						Function<T, ? extends Comparable> sortKey = SearchField.chooseField(scanner, factory);
-						if (sortKey != null) {
 							sortStrategy.sort(data);
 							System.out.println("Данные успешно отсортированы.");
 							System.out.println("Отсортированный массив: " + data);
-						}else {
-							System.out.println("Can not sorting only even by specified field");
-						}
 					}
 				}
 				case "3" -> {

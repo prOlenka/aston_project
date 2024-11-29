@@ -14,12 +14,15 @@ import java.util.Scanner;
 import java.util.function.Function;
 
 public class SearchField {
+    // Метод для выбора поля для поиска, в зависимости от типа объекта
     public static <T> Function<T, ? extends Comparable> chooseField(Scanner scanner, ObjectFactory<T> factory) {
 
+        // Карта для сопоставления выбора поля с функцией
         Map<String, Function<T, ? extends Comparable>> fieldMap = new HashMap<>();
 
+        // Проверка, какой фабрики объект и добавление соответствующих функций
         if (factory instanceof BusFactory) {
-            System.out.println("""
+            System.out.println(""" 
                         Выберете поле:
                         1.Номер
                         2.Модель
@@ -29,7 +32,7 @@ public class SearchField {
             fieldMap.put("2", bus -> ((Bus) bus).getModel());
             fieldMap.put("3", bus -> ((Bus) bus).getMileage());
         } else if (factory instanceof StudentFactory) {
-            System.out.println("""
+            System.out.println(""" 
                         Выберете поле:
                         1.Номер группы
                         2.Средний балл
@@ -39,7 +42,7 @@ public class SearchField {
             fieldMap.put("2", student -> ((Student) student).getAverageScore());
             fieldMap.put("3", student -> ((Student) student).getRecordBookNumber());
         } else if (factory instanceof UserFactory) {
-            System.out.println("""
+            System.out.println(""" 
                         Выберете поле:
                         1.Имя
                         2.Пароль
@@ -50,8 +53,8 @@ public class SearchField {
             fieldMap.put("3", user -> ((User) user).getEmail());
         }
 
+        // Считывание ввода пользователя и возврат соответствующей функции
         String fieldChoice = scanner.nextLine();
-        return fieldMap.getOrDefault(fieldChoice, null);
+        return fieldMap.getOrDefault(fieldChoice, null); // Возвращает функцию для выбранного поля
     }
-
 }

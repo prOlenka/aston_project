@@ -8,7 +8,6 @@ import java.lang.reflect.Field;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Scanner;
-import java.util.function.Function;
 
 public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
     private Comparator<T> comparator;
@@ -19,6 +18,8 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
         Sortable<T> typeSorting = new NaturalSort();
         Scanner scanner = new Scanner(System.in);
         String fieldChoice = null;
+
+        // Выбор поля для сортировки в зависимости от типа объекта в списке.
         switch(items.get(0).getClass().getSimpleName()) {
             case "Bus" -> {
                 System.out.println("""
@@ -91,6 +92,8 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
                 }
             }
         }
+
+        // Выбор типа сортировки.
         System.out.println("""
         Выбрать способ сортировки:
         1.Обычный порядок
@@ -104,6 +107,7 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
         return quickSort(items, 0, items.size() - 1, typeSorting);
     }
 
+    // Метод быстрой сортировки
     private int quickSort(List<T> items, int low, int high, Sortable<T> typeSort) {
         if (low < high) {
             int pivotIndex = typeSort.partition(items, low, high);
@@ -114,13 +118,11 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
             } else {
                 return -1;
             }
-
         }
         return -1;
     }
 
-
-
+    // Класс для обычной сортировки
     class NaturalSort implements Sortable<T> {
         public int partition(List<T> items, int low, int high) {
             T pivot = items.get(high);
@@ -137,6 +139,7 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
         }
     }
 
+    // Класс для сортировки только чётных чисел
     class EvenSort implements Sortable<T> {
         String field;
         public EvenSort(String field) {
@@ -148,6 +151,7 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
                 Field currentField = items.get(high).getClass().getDeclaredField(field);
                 if(currentField.getType() == int.class) {
                     currentField.setAccessible(true);
+                    // Пропускаем нечетные числа в процессе сортировки
                     while (currentField.getInt(items.get(high)) % 2 == 1 && low < high) high--;
                     int pivot = currentField.getInt(items.get(high));
                     int pLow = low;
@@ -177,6 +181,7 @@ public class QuickSort<T extends Comparable<T>> implements SortStrategy<T> {
         }
     }
 
+    // Метод для обмена элементов в списке
     private void swap(List<T> items, int i, int j) {
         T temp = items.get(i); // Сохраняем временно значение i
         items.set(i, items.get(j));  // Меняем местами значения i и j
